@@ -293,8 +293,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .creation__cta { margin-top: var(--s-3); justify-self: start; }
 /* Fanned phones */
 .fan { position: absolute; inset: 0; display: grid; place-items: center; }
-.fan .phone { position: absolute; width: 30%; padding: 5px; border-radius: 22px; transition: transform var(--dur-slow) var(--ease); }
-.fan .phone__screen { border-radius: 18px; }
+.fan .phone { position: absolute; width: 30%; transition: transform var(--dur-slow) var(--ease); }
 .fan .phone:nth-child(1) { transform: translateX(-62%) rotate(-9deg) scale(0.9); }
 .fan .phone:nth-child(2) { z-index: 2; transform: translateY(4%); }
 .fan .phone:nth-child(3) { transform: translateX(62%) rotate(9deg) scale(0.9); }
@@ -314,8 +313,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .theme-card { overflow: hidden; display: flex; flex-direction: column; }
 .theme-card:hover { transform: translateY(-6px); }
 .theme-card__media { position: relative; aspect-ratio: 1 / 0.92; overflow: hidden; display: grid; place-items: center; cursor: pointer; border-bottom: 1px solid var(--border); }
-.theme-card__media .phone { width: 42%; padding: 6px; border-radius: 26px; transition: transform var(--dur-slow) var(--ease); transform: translateY(14%); }
-.theme-card__media .phone__screen { border-radius: 20px; }
+.theme-card__media .phone { width: 42%; transition: transform var(--dur-slow) var(--ease); transform: translateY(14%); }
 .theme-card__media .browser { position: absolute; width: 74%; left: 50%; top: 12%; transform: translateX(-50%) scale(0.92); opacity: 0.0; transition: transform var(--dur-slow) var(--ease), opacity var(--dur-slow) var(--ease); }
 .theme-card:hover .theme-card__media .phone { transform: translateY(18%) translateX(32%) scale(0.86); }
 .theme-card:hover .theme-card__media .browser { opacity: 1; transform: translateX(-62%) scale(1); }
@@ -410,8 +408,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .work-card__media img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 1.2s var(--ease); }
 .work-card:hover .work-card__media img { transform: scale(1.05); }
 .work-card__media--portrait { background: var(--peach); display: grid; place-items: center; }
-.work-card__media--portrait .phone { width: 34%; padding: 5px; border-radius: 20px; transform: translateY(16%); transition: transform var(--dur-slow) var(--ease); }
-.work-card__media--portrait .phone__screen { border-radius: 16px; }
+.work-card__media--portrait .phone { width: 34%; transform: translateY(16%); transition: transform var(--dur-slow) var(--ease); }
 .work-card:hover .work-card__media--portrait .phone { transform: translateY(10%); }
 .work-card__media--portrait img { transform: none !important; }
 .work-card__type { position: absolute; top: 14px; left: 14px; z-index: 2; }
@@ -623,7 +620,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .contact-v2 { background: var(--white); padding-top: clamp(40px, 5vw, 72px); }
 .contact-panel { display: grid; justify-items: center; gap: 18px; text-align: center; padding: clamp(56px, 8vw, 104px) clamp(20px, 5vw, 64px); border-radius: 32px; background: var(--cream); border: 1px solid var(--border); }
 .contact-panel__title { margin: 0; font-family: var(--font-sans); font-weight: 700; letter-spacing: -0.045em; line-height: 1.04; font-size: clamp(2.25rem, 1.4rem + 3.4vw, 4.5rem); color: var(--text); }
-.contact-panel__accent { color: var(--gold); }
+.contact-panel__accent { color: var(--gold-vivid); }
 .contact-v2 .contact__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
 .btn--glass { background: var(--white); color: var(--text); border: 1.5px solid var(--border); border-radius: 999px; }
 .btn--glass:hover { border-color: var(--text); transform: translateY(-2px); }
@@ -750,14 +747,67 @@ html.has-cursor iframe { cursor: auto !important; }
 .cursor-burst__spark:nth-child(even) { color: #e8a0a8; }
 .cursor-burst__spark svg { width: 100%; height: 100%; display: block; }
 
-/* ---------- Hero heading shine — a slow gleam that passes over each word in turn ---------- */
+/* ---------- Hero heading shine — one slow gleam across the whole heading, both lines at once ---------- */
 .hero__title { position: relative; }
-.hero__shine { position: absolute; inset: 0; pointer-events: none; color: transparent; -webkit-text-fill-color: transparent; }
-.hero__shine .hero__word { overflow: visible;
-  background-image: linear-gradient(100deg, transparent 0%, transparent 38%, rgba(233, 185, 87, 0.9) 46%, #fff1cf 50%, rgba(233, 185, 87, 0.9) 54%, transparent 62%, transparent 100%);
-  background-size: 320% 100%; background-repeat: no-repeat; background-position: 100% 0;
+.hero__shine { position: absolute; inset: 0; pointer-events: none; color: transparent; -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(105deg, transparent 0%, transparent 46.5%, rgba(233, 185, 87, 0.9) 48.8%, #fff1cf 50%, rgba(233, 185, 87, 0.9) 51.2%, transparent 53.5%, transparent 100%);
+  background-size: 300% 100%; background-repeat: no-repeat; background-position: 100% 0;
   -webkit-background-clip: text; background-clip: text; }
-/* 7 words × 0.42s stagger; each gleam lasts ~1.25s; the whole cycle repeats every 5s */
-.hero__shine.is-on .hero__word { animation: wordShine 5s ease-in-out infinite; animation-delay: calc(1.5s + var(--i) * 0.42s); }
-@keyframes wordShine { 0% { background-position: 100% 0; } 25%, 100% { background-position: 0% 0; } }
+.hero__shine .hero__word { overflow: visible; }
+.hero__shine.is-on { animation: heroShine 5s cubic-bezier(0.45, 0, 0.3, 1) 1.5s infinite; }
+@keyframes heroShine { 0% { background-position: 100% 0; } 50%, 100% { background-position: 0% 0; } }
 @media (prefers-reduced-motion: reduce) { .hero__shine { display: none; } }
+
+/* ---------- Custom design card — flat dark brown, solid gold title ---------- */
+.collection .custom-card { border: 0; background: #241c18; box-shadow: none; }
+.collection .custom-card .collection__eyebrow { color: #b3a598; }
+.collection .custom-card .h2 { color: var(--gold-bright); }
+.collection .custom-card p { color: #b3a598; }
+.collection .custom-card .btn--primary { background: #fff; color: #241c18; box-shadow: none; }
+.collection .custom-card .btn--primary:hover { background: #f4ede6; color: #241c18; box-shadow: none; }
+
+/* ---------- Top sale bar — one solid colour, only "Claim now" is a button ---------- */
+:root { --gold-bright: #f0b12a; --gold-vivid: #dc9210; --gold-metal: linear-gradient(100deg, #b36a12 0%, #e09a1c 22%, #f5c24a 45%, #fbe08f 52%, #eaa827 66%, #c27a14 100%); } /* logo highlight golds (#F0A818 / #F0C030 range) */
+.salebar { position: relative; z-index: 70; background: #241c18; }
+.salebar__inner { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 42px; padding: 6px 16px; font-family: var(--font-sans); font-size: 0.875rem; color: #e8ddd3; text-align: center; }
+.salebar__label { color: #fff; font-weight: 700; }
+.salebar__sep { width: 1px; height: 16px; background: rgba(255, 255, 255, 0.28); }
+.salebar__cta { margin-left: 4px; display: inline-flex; align-items: center; height: 28px; padding: 0 14px; border-radius: 999px; background: var(--gold-light); color: #241c18; font-weight: 700; font-size: 0.8125rem; white-space: nowrap; transition: background var(--dur) var(--ease); }
+.salebar__inner:hover .salebar__cta { background: #f1cd7c; }
+@media (max-width: 640px) {
+  .salebar__inner { gap: 10px; font-size: 0.8125rem; padding: 8px 12px; }
+  .salebar__label { color: var(--gold-bright); }
+  .salebar__cta { display: none; }
+}
+
+/* Sale price on theme cards */
+.product-info__price--sale { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.product-info__price--sale s { font-size: 0.55em; font-weight: 500; color: var(--text-3); text-decoration-thickness: 1.5px; }
+.product-info__price--sale em { font-style: normal; font-family: var(--font-sans); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; color: var(--gold-deep); background: var(--surface-gold); border: 1px solid #f0dcbc; padding: 3px 8px; border-radius: 999px; align-self: center; }
+
+/* ---------- iPhone 15 mockup (scales with its width) ---------- */
+.phone { container-type: inline-size; aspect-ratio: 71.6 / 147.6; padding: 0; border-radius: 17% / 8.25%;
+  background: linear-gradient(145deg, #4a4643 0%, #2b2927 30%, #1c1b1a 60%, #3a3735 100%);
+  box-shadow: inset 0 0 0 1.5px #66615c, inset 0 0 0 3px #141312, 0 30px 60px -28px rgba(41, 33, 29, 0.45), 0 8px 18px -10px rgba(41, 33, 29, 0.3); }
+.phone > .phone__screen { position: absolute; inset: 3.6cqw; width: auto; height: auto; border-radius: 13.4cqw; background: #000; }
+.phone__notch { top: 2.8cqw; width: 30cqw; height: 8.8cqw; border-radius: 99px; background: #000; }
+.phone__buttons, .phone__buttons::before, .phone__buttons::after { position: absolute; width: 1.1cqw; border-radius: 1cqw; background: linear-gradient(90deg, #26231f, #57524d); }
+.phone__buttons { left: -0.8cqw; top: 18%; height: 5%; }
+.phone__buttons::before { content: ""; left: 0; top: 170%; height: 190%; }
+.phone__buttons::after { content: ""; left: 0; top: 410%; height: 190%; }
+.phone::after { content: ""; position: absolute; right: -0.6%; top: 27%; width: 1.4%; height: 14%; border-radius: 2px; background: linear-gradient(90deg, #57524d, #26231f); }
+
+/* Mobile hero heading — heavier weight */
+@media (max-width: 767px) { .h-hero { font-weight: 800; } }
+
+/* Custom card — logo-style gold heading + top glow like the footer */
+.collection .custom-card { position: relative; overflow: hidden; }
+.collection .custom-card::before { content: ""; position: absolute; left: 50%; top: -260px; width: 900px; height: 480px; margin-left: -450px; border-radius: 50%; background: radial-gradient(closest-side, rgba(196, 122, 25, 0.28), transparent); pointer-events: none; }
+.collection .custom-card > * { position: relative; }
+.collection .custom-card .h2 { background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.08em; }
+
+/* Logo-style metallic gold text — shared by the custom card, contact accent and mobile sale label */
+.contact-panel__accent { background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 0.08em; }
+@media (max-width: 640px) {
+  .salebar__label { background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
+}

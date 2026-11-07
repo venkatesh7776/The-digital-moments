@@ -40,3 +40,16 @@ export const qrHowItWorks = {
     { title: "All photos on one website", text: "Every photo and wish lands together on your own memories website, ready to relive and share." },
   ],
 };
+
+/** Wedding Sale — top bar + discounted theme prices. Set enabled: false when the sale ends. */
+export const saleBar = {
+  enabled: true,
+  discountPercent: 10,
+  label: "Wedding Sale",
+  text: "Get 10% off any wedding template",
+  cta: "Claim now",
+};
+
+export function salePrice(price: number) {
+  return saleBar.enabled ? Math.round((price * (100 - saleBar.discountPercent)) / 100) : price;
+}

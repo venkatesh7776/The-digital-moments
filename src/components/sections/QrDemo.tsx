@@ -136,7 +136,7 @@ export function QrScreens({ step }: { step: number }) {
 
 export function QrPhone({ step }: { step: number }) {
   return (
-    <div className="phone">
+    <div className="phone"><span className="phone__buttons" aria-hidden />
       <div className="phone__screen">
         <span className="phone__notch" />
         <QrScreens step={step} />

@@ -70,7 +70,7 @@ export function Hero() {
             {hero.title.split(" ").map((word, i) => (
               <Fragment key={i}>
                 {i > 0 && " "}
-                <span className="hero__word" style={{ "--i": i } as React.CSSProperties}>{word}</span>
+                <span className="hero__word">{word}</span>
               </Fragment>
             ))}
           </span>

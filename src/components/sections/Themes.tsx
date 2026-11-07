@@ -38,7 +38,7 @@ export function Themes() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={t.desktopImage} alt="" loading="lazy" />
                     </div>
-                    <div className="phone">
+                    <div className="phone"><span className="phone__buttons" aria-hidden />
                       <div className="phone__screen">
                         <span className="phone__notch" />
                         {/* eslint-disable-next-line @next/next/no-img-element */}

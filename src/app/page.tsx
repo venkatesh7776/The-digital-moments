@@ -1,4 +1,5 @@
 import { Hero } from "@/components/sections/Hero";
+import { SaleBar } from "@/components/SaleBar";
 import { Themes } from "@/components/sections/Themes";
 import { Extras } from "@/components/sections/Extras";
 import { Testimonials } from "@/components/sections/Testimonials";
@@ -8,6 +9,7 @@ import { Footer } from "@/components/sections/Footer";
 export default function Home() {
   return (
     <>
+      <SaleBar />
       <main>
         <Hero />
         <Themes />

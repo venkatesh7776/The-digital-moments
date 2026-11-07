@@ -42,7 +42,7 @@ export function Extras() {
             <article className="card extra-card">
               <div className="extra-card__media extra-card__media--video" onClick={watch} role="button" tabIndex={-1} aria-hidden>
                 <span className="chip chip--neutral extra-card__badge"><span className="live-dot" /> {extras.videoBadge}</span>
-                <div className="phone">
+                <div className="phone"><span className="phone__buttons" aria-hidden />
                   <div className="phone__screen">
                     <span className="phone__notch" />
                     <video src={v.previewSrc} poster={v.poster} muted loop autoPlay playsInline preload="metadata" />

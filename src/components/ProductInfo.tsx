@@ -1,6 +1,7 @@
 "use client";
 
 import { formatPrice, type Price } from "@/data/catalog";
+import { saleBar, salePrice } from "@/data/content";
 import { whatsappLink } from "@/data/site";
 import { track } from "@/lib/track";
 import { HelpIcon, PlayIcon, WhatsAppIcon } from "./Icons";
@@ -19,13 +20,23 @@ type Props = {
 /** Name · tier · price · [Demo] [Buy Now] — used on every offer card. */
 export function ProductInfo({ name, tier, price, summary, demoLabel = "Demo", demoIcon = "play", onDemo, headingLevel = "h3" }: Props) {
   const H = headingLevel;
-  const message = `Hi The Digital Moments! I'm interested in the ${name}${price ? ` (${formatPrice(price)})` : ""}. Could you share the details?`;
+  const onSale = price !== null && saleBar.enabled;
+  const finalPrice = price !== null ? salePrice(price) : null;
+  const message = `Hi The Digital Moments! I'm interested in the ${name}${finalPrice ? ` (${formatPrice(finalPrice)}${onSale ? ` with the ${saleBar.discountPercent}% Wedding Sale offer` : ""})` : ""}. Could you share the details?`;
   return (
     <div className="product-info">
       <H className="product-info__name">{name}</H>
       <span className="product-info__tier">{tier}</span>
       {summary && <p className="product-info__summary">{summary}</p>}
-      <span className={`product-info__price ${price === null ? "product-info__price--request" : ""}`}>{formatPrice(price)}</span>
+      {onSale ? (
+        <span className="product-info__price product-info__price--sale">
+          <span className="product-info__amount">{formatPrice(finalPrice)}</span>
+          <s aria-label={`Original price ${formatPrice(price)}`}>{formatPrice(price)}</s>
+          <em>{saleBar.discountPercent}% off</em>
+        </span>
+      ) : (
+        <span className={`product-info__price ${price === null ? "product-info__price--request" : ""}`}>{formatPrice(price)}</span>
+      )}
       <div className="product-info__actions">
         <button className="btn btn--secondary" onClick={() => { track("demo_click", { item: name }); onDemo(); }}>
           {demoIcon === "help" ? <HelpIcon /> : <PlayIcon />} {demoLabel}
