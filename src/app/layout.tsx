@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { GoogleTagManager } from "@next/third-parties/google";
+import Script from "next/script";
 import { Loader } from "@/components/Loader";
 import { Cursor } from "@/components/Cursor";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
@@ -39,6 +41,12 @@ const jsonLd = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${cormorant.variable} ${manrope.variable}`}>
+      <GoogleTagManager gtmId={site.googleTagId} />
+      {/* GA4 event channel: page views come from the GTM container, so this one only carries click events */}
+      <Script src={`https://www.googletagmanager.com/gtag/js?id=${site.gaMeasurementId}`} strategy="afterInteractive" />
+      <Script id="ga4-events" strategy="afterInteractive">
+        {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config','${site.gaMeasurementId}',{send_page_view:false});`}
+      </Script>
       <body className="is-loading">
         <noscript><style>{`.loader{display:none!important}body.is-loading{overflow:auto}`}</style></noscript>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

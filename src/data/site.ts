@@ -15,6 +15,8 @@ export const site = {
   instagramUrl: "https://www.instagram.com/thedigitalmoments", // TODO: confirm handle
   instagramHandle: "@thedigitalmoments", // TODO: confirm handle
   email: "",
+  googleTagId: "GTM-N5Q9VLGH", // Google Tag Manager container (page views)
+  gaMeasurementId: "G-KN90E785XQ", // GA4 property the container reports to (button-click events)
 };
 
 export function whatsappLink(message?: string) {
