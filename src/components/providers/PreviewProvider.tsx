@@ -94,7 +94,7 @@ function PreviewModal({ preview, onClose }: { preview: Preview; onClose: () => v
             rel="noopener noreferrer"
             onClick={() => track("buy_click", { item: preview.title, from: "preview" })}
           >
-            <WhatsAppIcon /> <span className="hide-xs">Buy Now</span>
+            <WhatsAppIcon /> <span className="hide-xs">Enquire on WhatsApp</span>
           </a>
           <button ref={closeRef} className="icon-btn" onClick={onClose} aria-label="Close preview"><CloseIcon /></button>
         </div>

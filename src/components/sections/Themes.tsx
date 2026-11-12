@@ -1,13 +1,13 @@
 "use client";
 
-import { themes } from "@/data/catalog";
-import { whatsappLink } from "@/data/site";
+import { formatPrice, themes } from "@/data/catalog";
+import { enquiryMessage, whatsappLink } from "@/data/site";
 import { track } from "@/lib/track";
 import { Sparkle, WhatsAppIcon } from "../Icons";
 import { Reveal } from "../motion/Reveal";
 import { ProductInfo } from "../ProductInfo";
 import { usePreview } from "../providers/PreviewProvider";
-import { collection } from "@/data/content";
+import { collection, saleBar, salePrice } from "@/data/content";
 import { LineReveal } from "../motion/Reveal";
 
 export function Themes() {
@@ -25,10 +25,10 @@ export function Themes() {
         <div className="themes-grid">
           {themes.map((t, i) => {
             const demo = () =>
-              open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: `Hi The Digital Moments! I'm interested in the ${t.name} wedding website. Could you share the details?` });
+              open({ kind: "site", title: t.name, subtitle: t.price !== null ? `Live demo · ${formatPrice(salePrice(t.price))}${saleBar.enabled ? ` (${saleBar.discountPercent}% off)` : ""}` : "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name) });
             return (
               <Reveal key={t.slug} delay={(i % 3) * 0.12} style={{ height: "100%" }}>
-                <article className="card theme-card" style={{ height: "100%" }}>
+                <article className="card theme-card" id={`theme-${t.slug}`} style={{ height: "100%" }}>
                   <div className="theme-card__media" style={{ background: t.accent }} onClick={demo} role="button" tabIndex={-1} aria-hidden>
                     <div className="theme-card__badges">
                       <span className="chip chip--neutral"><span className="live-dot" /> Live website</span>
@@ -59,7 +59,7 @@ export function Themes() {
                 <h3 className="h2">Need a website in your own theme?</h3>
                 <p>Any theme, any culture, any style — share your idea and we’ll design a website that’s completely yours. Yes, it’s possible here.</p>
               </div>
-              <a className="btn btn--primary" href={whatsappLink("Hi The Digital Moments! I'd like a custom-designed wedding website.")} target="_blank" rel="noopener noreferrer" onClick={() => track("whatsapp_click", { from: "custom_theme" })}>
+              <a className="btn btn--primary" href={whatsappLink("Hi, The Digital Moments! I'd like a custom-designed wedding website.")} target="_blank" rel="noopener noreferrer" onClick={() => track("whatsapp_click", { from: "custom_theme" })}>
                 <WhatsAppIcon /> Share your idea
               </a>
             </div>

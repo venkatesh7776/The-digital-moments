@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-export type CarouselItem = { src: string; label: string; onClick?: () => void };
+export type CarouselItem = { src: string; label: string; title: string; kind: string; onClick?: () => void };
 
 type Props = { items: CarouselItem[]; speed?: number; curve?: number };
 
@@ -14,7 +14,7 @@ type Props = { items: CarouselItem[]; speed?: number; curve?: number };
 export function CurvedCarousel({ items, speed = 0.28, curve = 11 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const state = useRef({ angle: 0, vel: 0, dragging: false, lastX: 0, moved: 0, visible: true });
+  const state = useRef({ angle: 0, vel: 0, dragging: false, hoverUntil: 0, lastX: 0, moved: 0, visible: true });
 
   // Repeat items so the ring is always full
   const count = Math.max(items.length * 2, 16);
@@ -68,7 +68,9 @@ export function CurvedCarousel({ items, speed = 0.28, curve = 11 }: Props) {
       if (s.visible) {
         if (!s.dragging) {
           s.vel *= 0.94;
-          s.angle -= (reduce ? 0 : speed) * dt; s.angle += s.vel; // drift right → left
+          // drift right → left; slows (never stops) while the mouse is actively moving over a card
+          const slow = now < s.hoverUntil ? 0.2 : 1;
+          s.angle -= (reduce ? 0 : speed * slow) * dt; s.angle += s.vel;
         }
         render();
       }
@@ -76,7 +78,11 @@ export function CurvedCarousel({ items, speed = 0.28, curve = 11 }: Props) {
     };
     render();
     raf = requestAnimationFrame(tick);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); };
+    // a drag released outside the carousel must never leave it stuck
+    const release = () => { s.dragging = false; };
+    window.addEventListener("pointerup", release);
+    window.addEventListener("blur", release);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); window.removeEventListener("pointerup", release); window.removeEventListener("blur", release); };
   }, [speed, curve, count]);
 
   const onDown = (e: React.PointerEvent) => {
@@ -112,10 +118,15 @@ export function CurvedCarousel({ items, speed = 0.28, curve = 11 }: Props) {
           className="curve__card"
           aria-label={item.label}
           tabIndex={i < items.length ? 0 : -1}
+          onPointerMove={(e) => { if (e.pointerType === "mouse") state.current.hoverUntil = performance.now() + 1500; }}
+          onPointerLeave={() => { state.current.hoverUntil = 0; }}
           onClick={(e) => { if (state.current.moved > 6) { e.preventDefault(); return; } item.onClick?.(); }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={item.src} alt="" draggable={false} loading={i < 10 ? "eager" : "lazy"} />
+          <span className="curve__caption" aria-hidden>
+            <b>{item.kind}</b>
+          </span>
         </button>
       ))}
     </div>

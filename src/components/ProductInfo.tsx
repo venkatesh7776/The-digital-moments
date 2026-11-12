@@ -2,7 +2,7 @@
 
 import { formatPrice, type Price } from "@/data/catalog";
 import { saleBar, salePrice } from "@/data/content";
-import { whatsappLink } from "@/data/site";
+import { enquiryMessage, whatsappLink } from "@/data/site";
 import { track } from "@/lib/track";
 import { HelpIcon, PlayIcon, WhatsAppIcon } from "./Icons";
 
@@ -17,12 +17,12 @@ type Props = {
   headingLevel?: "h3" | "h4";
 };
 
-/** Name · tier · price · [Demo] [Buy Now] — used on every offer card. */
-export function ProductInfo({ name, tier, price, summary, demoLabel = "Demo", demoIcon = "play", onDemo, headingLevel = "h3" }: Props) {
+/** Name · tier · price · [Live demo] [Enquire on WhatsApp] — used on every offer card. */
+export function ProductInfo({ name, tier, price, summary, demoLabel = "Live demo", demoIcon = "play", onDemo, headingLevel = "h3" }: Props) {
   const H = headingLevel;
   const onSale = price !== null && saleBar.enabled;
   const finalPrice = price !== null ? salePrice(price) : null;
-  const message = `Hi The Digital Moments! I'm interested in the ${name}${finalPrice ? ` (${formatPrice(finalPrice)}${onSale ? ` with the ${saleBar.discountPercent}% Wedding Sale offer` : ""})` : ""}. Could you share the details?`;
+  const message = enquiryMessage(name);
   return (
     <div className="product-info">
       <H className="product-info__name">{name}</H>
@@ -42,7 +42,7 @@ export function ProductInfo({ name, tier, price, summary, demoLabel = "Demo", de
           {demoIcon === "help" ? <HelpIcon /> : <PlayIcon />} {demoLabel}
         </button>
         <a className="btn btn--primary btn--buy" href={whatsappLink(message)} target="_blank" rel="noopener noreferrer" onClick={() => track("buy_click", { item: name, from: "card" })}>
-          <WhatsAppIcon /> Buy Now
+          <WhatsAppIcon /> Enquire on WhatsApp
         </a>
       </div>
     </div>

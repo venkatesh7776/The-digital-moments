@@ -4,12 +4,13 @@ export const hero = {
   title: "Digital Wedding Invitations for Every Indian Celebration.",
   sub: "Personalised digital wedding invitations for Indian couples, with RSVP, countdowns, galleries and venue maps in one link.",
   cta: "Choose a theme",
+  scrollCue: "See all themes & prices",
 };
 
 export const collection = {
-  eyebrow: "Our Collection",
-  title: "Invitation Demos",
-  sub: "Handcrafted with cultural authenticity and smooth animations.",
+  eyebrow: "Wedding Websites",
+  title: "Wedding Website Templates",
+  sub: "Each one is a live website — open the demo, then we personalise it with your names, story, events and photos. RSVP, countdown and venue map included.",
 };
 
 export const extras = {

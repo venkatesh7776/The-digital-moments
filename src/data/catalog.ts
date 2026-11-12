@@ -59,7 +59,7 @@ export const themes: Theme[] = [
   {
     slug: "temple",
     name: "Temple Theme",
-    tier: "Premium",
+    tier: "Wedding website · Premium",
     price: 4999,
     summary: "Carved temple pillars, brass bells, diyas and fresh marigold garlands — a warm, traditional welcome.",
     demoUrl: "https://www.muralivarshitha.in/",
@@ -70,7 +70,7 @@ export const themes: Theme[] = [
   {
     slug: "noor",
     name: "Noor Theme",
-    tier: "Premium",
+    tier: "Wedding website · Premium",
     price: 4999,
     summary: "Deep teal arches, glowing lanterns and a graceful verse opening — elegant and serene for a Nikah.",
     demoUrl: "https://sahlaabdulbasith.vercel.app/",
@@ -81,7 +81,7 @@ export const themes: Theme[] = [
   {
     slug: "coastal",
     name: "Coastal Theme",
-    tier: "Premium",
+    tier: "Wedding website · Premium",
     price: 3999,
     summary: "Sunlit seaside photography and refined serif typography — made for destination and beach celebrations.",
     demoUrl: "https://wedding-tau-ivory.vercel.app/",

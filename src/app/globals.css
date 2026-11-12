@@ -811,3 +811,50 @@ html.has-cursor iframe { cursor: auto !important; }
 @media (max-width: 640px) {
   .salebar__label { background: var(--gold-metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
 }
+
+/* ---------- Carousel: theme name on each card ---------- */
+.curve__caption { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 40px 10% 9%; text-align: left;
+  background: linear-gradient(180deg, rgba(20, 15, 12, 0) 0%, rgba(20, 15, 12, 0.5) 50%, rgba(20, 15, 12, 0.78) 100%); color: #fff; font-family: var(--font-sans); }
+.curve__caption b { display: block; font-size: clamp(0.8125rem, 0.6rem + 0.5vw, 1rem); font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+
+/* "Starting at" price line under the hero button */
+.hero__from { margin: 4px 0 0; font-family: var(--font-sans); font-size: 0.9375rem; color: var(--text-2); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; }
+.hero__from strong { color: var(--text); font-weight: 700; }
+.hero__from s { color: var(--text-3); }
+.hero__from-tag { font-size: 0.75rem; font-weight: 700; color: var(--gold-deep); background: var(--surface-gold); border: 1px solid #f0dcbc; padding: 3px 9px; border-radius: 999px; }
+
+/* Scroll cue at the bottom of the first screen */
+.scroll-cue { position: fixed; left: 0; right: 0; margin: 0 auto; width: fit-content; bottom: 22px; z-index: 55; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px 0 20px; border-radius: 999px;
+  background: rgba(36, 28, 24, 0.92); color: #fff; font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; white-space: nowrap; box-shadow: 0 14px 30px -12px rgba(36, 28, 24, 0.6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.scroll-cue__arrow { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--gold-light); color: #241c18; font-size: 14px; animation: cueBounce 1.6s ease-in-out infinite; }
+@keyframes cueBounce { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+@media (max-width: 640px) { .scroll-cue { left: 16px; right: 88px; bottom: 26px; height: 42px; padding: 0 12px 0 16px; font-size: 0.8125rem; } } /* centred in the space left of the WhatsApp button */
+
+/* Spotlight on the card the visitor tapped in the carousel */
+.card.is-spotlight { animation: spotlight 2.4s var(--ease) 1; }
+@keyframes spotlight {
+  0% { box-shadow: 0 0 0 0 rgba(233, 185, 87, 0); }
+  15% { box-shadow: 0 0 0 4px rgba(233, 185, 87, 0.95), 0 24px 50px -20px rgba(196, 122, 25, 0.55); }
+  70% { box-shadow: 0 0 0 4px rgba(233, 185, 87, 0.8), 0 24px 50px -20px rgba(196, 122, 25, 0.4); }
+  100% { box-shadow: 0 0 0 0 rgba(233, 185, 87, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .scroll-cue__arrow { animation: none; } }
+
+/* Offer buttons — longer WhatsApp label gets more room */
+.product-info__actions { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+.product-info__actions .btn { white-space: nowrap; }
+/* Narrow cards (phones, 2-column tablets): stack the buttons, WhatsApp first */
+.product-info { container-type: inline-size; }
+@container (max-width: 400px) {
+  .product-info__actions { grid-template-columns: 1fr; }
+  .product-info__actions .btn--buy { order: -1; }
+}
+
+/* Carousel caption: what it is (Wedding website / Video invitation) above the theme name */
+.collection__head .collection__sub { max-width: 40em; }
+
+/* Carousel caption = product type only */
+.curve__caption b { font-size: clamp(0.6875rem, 0.55rem + 0.35vw, 0.8125rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+/* Hero price line: label + price group; on phones the price group drops to its own line */
+.hero__from-price { display: inline-flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 4px 8px; }
+@media (max-width: 640px) { .hero__from { flex-direction: column; gap: 6px; } }

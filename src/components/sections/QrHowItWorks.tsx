@@ -108,7 +108,7 @@ export function QrHowItWorks() {
       <motion.div className="hiw__cta" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.6 }}>
         <a
           className="btn btn--dark btn--lg"
-          href={whatsappLink("Hi The Digital Moments! I'd like to set up Moments QR for my event.")}
+          href={whatsappLink("Hi, The Digital Moments! I'd like to set up Moments QR for my event.")}
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => track("buy_click", { item: "Moments QR", from: "how_it_works" })}

@@ -3,6 +3,7 @@
 import { useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { qrExperience, videoInvites } from "@/data/catalog";
+import { enquiryMessage } from "@/data/site";
 import { extras } from "@/data/content";
 import { PlayFilled, Sparkle } from "../Icons";
 import { LineReveal, Reveal } from "../motion/Reveal";
@@ -15,8 +16,8 @@ export function Extras() {
   const { open } = usePreview();
   const v = videoInvites[0];
 
-  const watch = () => open({ kind: "video", title: v.name, subtitle: `Video invitation · ${v.duration} min`, src: v.src, poster: v.poster, buyMessage: `Hi The Digital Moments! I'm interested in the ${v.name} video invitation.` });
-  const tryQr = () => open({ kind: "qr", title: qrExperience.name, subtitle: "How it works · Guest photo sharing", buyMessage: `Hi The Digital Moments! I'm interested in the ${qrExperience.name} guest photo sharing experience.` });
+  const watch = () => open({ kind: "video", title: v.name, subtitle: `Video invitation · ${v.duration} min`, src: v.src, poster: v.poster, buyMessage: enquiryMessage(extras.videoName) });
+  const tryQr = () => open({ kind: "qr", title: qrExperience.name, subtitle: "How it works · Guest photo sharing", buyMessage: enquiryMessage(qrExperience.name) });
 
   // QR phone cycles scan → upload → gallery while visible
   const [step, setStep] = useState(0);
@@ -39,7 +40,7 @@ export function Extras() {
 
         <div className="extras-grid">
           <Reveal className="extras-slot">
-            <article className="card extra-card">
+            <article className="card extra-card" id="video-card">
               <div className="extra-card__media extra-card__media--video" onClick={watch} role="button" tabIndex={-1} aria-hidden>
                 <span className="chip chip--neutral extra-card__badge"><span className="live-dot" /> {extras.videoBadge}</span>
                 <div className="phone"><span className="phone__buttons" aria-hidden />

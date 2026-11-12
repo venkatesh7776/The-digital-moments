@@ -1,34 +1,53 @@
 "use client";
 
-import { motion } from "motion/react";
-import { Fragment } from "react";
-import { themes, videoInvites } from "@/data/catalog";
-import { hero } from "@/data/content";
+import { AnimatePresence, motion } from "motion/react";
+import { Fragment, useEffect, useState } from "react";
+import { formatPrice, themes } from "@/data/catalog";
+import { hero, saleBar, salePrice } from "@/data/content";
+import { track } from "@/lib/track";
 import { CurvedCarousel, type CarouselItem } from "../CurvedCarousel";
 import { useAfterLoader } from "../Loader";
 import { EASE } from "../motion/Reveal";
-import { usePreview } from "../providers/PreviewProvider";
 import { useSmoothScroll } from "../providers/SmoothScroll";
 
 export function Hero() {
   const ready = useAfterLoader();
-  const { open } = usePreview();
   const { scrollTo } = useSmoothScroll();
-  const v = videoInvites[0];
+  const [atTop, setAtTop] = useState(true);
 
-  const openTheme = (i: number) => () => {
-    const t = themes[i];
-    open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: `Hi The Digital Moments! I'm interested in the ${t.name} wedding website.` });
+  useEffect(() => {
+    const on = () => setAtTop(window.scrollY < 80);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+
+  /** Scroll to the matching card (with price + Enquire) and briefly spotlight it. */
+  const goToCard = (id: string, name: string) => () => {
+    track("carousel_click", { item: name });
+    scrollTo(`#${id}`);
+    const el = document.getElementById(id);
+    if (!el) return;
+    window.setTimeout(() => {
+      el.classList.remove("is-spotlight");
+      void el.offsetWidth; // restart the animation
+      el.classList.add("is-spotlight");
+      window.setTimeout(() => el.classList.remove("is-spotlight"), 2400);
+    }, 1100);
   };
-  const openVideo = () => open({ kind: "video", title: v.name, subtitle: `Video invitation · ${v.duration} min`, src: v.src, poster: v.poster, buyMessage: `Hi The Digital Moments! I'm interested in the ${v.name} video invitation.` });
 
   // 3 live theme heroes + the video invitation's monogram — repeated round the ring
   const items: CarouselItem[] = [
-    { src: "/themes/theme-1-hero.webp?v=2", label: `${themes[0].name} — open live demo`, onClick: openTheme(0) },
-    { src: "/themes/theme-2-hero.webp?v=2", label: `${themes[1].name} — open live demo`, onClick: openTheme(1) },
-    { src: "/work/storybook-monogram.webp?v=2", label: "Watercolour Storybook video invitation — play", onClick: openVideo },
-    { src: "/themes/theme-3-hero.webp?v=2", label: `${themes[2].name} — open live demo`, onClick: openTheme(2) },
+    { src: "/themes/theme-1-hero.webp?v=2", label: `${themes[0].name} wedding website — see price and details`, title: themes[0].name, kind: "Wedding website", onClick: goToCard(`theme-${themes[0].slug}`, themes[0].name) },
+    { src: "/themes/theme-2-hero.webp?v=2", label: `${themes[1].name} wedding website — see price and details`, title: themes[1].name, kind: "Wedding website", onClick: goToCard(`theme-${themes[1].slug}`, themes[1].name) },
+    { src: "/work/storybook-monogram.webp?v=2", label: "Watercolour Storybook video invitation — see price and details", title: "Watercolour Storybook", kind: "Video invite", onClick: goToCard("video-card", "Video Invitation") },
+    { src: "/themes/theme-3-hero.webp?v=2", label: `${themes[2].name} wedding website — see price and details`, title: themes[2].name, kind: "Wedding website", onClick: goToCard(`theme-${themes[2].slug}`, themes[2].name) },
   ];
+
+  // Lowest theme price (after the sale discount) for the "Starting at" line
+  const prices = themes.map((t) => t.price).filter((p): p is number => p !== null);
+  const fromFull = Math.min(...prices);
+  const fromSale = salePrice(fromFull);
 
   const show = (delay: number) => ({
     initial: { opacity: 0, y: 28, filter: "blur(6px)" },
@@ -79,11 +98,36 @@ export function Hero() {
         <motion.div className="hero__cta" {...show(0.65)}>
           <a href="#themes" className="btn btn--dark btn--lg" onClick={(e) => { e.preventDefault(); scrollTo("#themes"); }}>{hero.cta}</a>
         </motion.div>
+        <motion.p className="hero__from" {...show(0.75)}>
+          <span className="hero__from-label">Wedding websites start from</span>
+          <span className="hero__from-price">
+            <strong>{formatPrice(fromSale)}</strong>
+            {saleBar.enabled && fromSale < fromFull && (<><s>{formatPrice(fromFull)}</s><span className="hero__from-tag">{saleBar.discountPercent}% off · Wedding Sale</span></>)}
+          </span>
+        </motion.p>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 80 }} animate={ready ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.6, ease: EASE, delay: 0.3 }}>
         <CurvedCarousel items={items} />
       </motion.div>
+
+      {/* Scroll cue pinned to the bottom of the first screen; fades once the visitor scrolls */}
+      <AnimatePresence>
+        {ready && atTop && (
+          <motion.a
+            href="#themes"
+            className="scroll-cue"
+            onClick={(e) => { e.preventDefault(); track("scroll_cue_click"); scrollTo("#themes"); }}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.5, ease: EASE, delay: 0.9 }}
+          >
+            {hero.scrollCue}
+            <span className="scroll-cue__arrow" aria-hidden>↓</span>
+          </motion.a>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
