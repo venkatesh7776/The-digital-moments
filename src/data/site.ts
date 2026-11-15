@@ -19,9 +19,9 @@ export const site = {
   gaMeasurementId: "G-KN90E785XQ", // GA4 property the container reports to (button-click events)
 };
 
-/** Pre-filled WhatsApp enquiry, e.g. "Hi, The Digital Moments! I'm interested in the Temple Theme. Could you share the details?" */
+/** Pre-filled WhatsApp enquiry, e.g. "Hi, Venkatesh! I'm interested in the Temple Theme. Could you share the details?" */
 export function enquiryMessage(item: string) {
-  return `Hi, The Digital Moments! I'm interested in the ${item}. Could you share the details?`;
+  return `Hi, Venkatesh! I'm interested in the ${item}. Could you share the details?`;
 }
 
 export function whatsappLink(message?: string) {

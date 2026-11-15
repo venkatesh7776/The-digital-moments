@@ -59,7 +59,7 @@ export function Themes() {
                 <h3 className="h2">Need a website in your own theme?</h3>
                 <p>Any theme, any culture, any style — share your idea and we’ll design a website that’s completely yours. Yes, it’s possible here.</p>
               </div>
-              <a className="btn btn--primary" href={whatsappLink("Hi, The Digital Moments! I'd like a custom-designed wedding website.")} target="_blank" rel="noopener noreferrer" onClick={() => track("whatsapp_click", { from: "custom_theme" })}>
+              <a className="btn btn--primary" href={whatsappLink("Hi, Venkatesh! I'd like a custom-designed wedding website.")} target="_blank" rel="noopener noreferrer" onClick={() => track("whatsapp_click", { from: "custom_theme" })}>
                 <WhatsAppIcon /> Share your idea
               </a>
             </div>

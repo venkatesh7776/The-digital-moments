@@ -82,13 +82,8 @@ function PreviewModal({ preview, onClose }: { preview: Preview; onClose: () => v
               <button aria-pressed={device === "desktop"} onClick={() => { if (device !== "desktop") { setLoaded(false); setDevice("desktop"); } }}><MonitorIcon /> Desktop</button>
             </div>
           )}
-          {preview.kind === "site" && (
-            <a className="icon-btn hide-sm" href={preview.url} target="_blank" rel="noopener noreferrer" aria-label="Open in a new tab" title="Open in a new tab">
-              <ExternalIcon />
-            </a>
-          )}
           <a
-            className="btn btn--primary btn--sm"
+            className="btn btn--whatsapp btn--sm"
             href={whatsappLink(preview.buyMessage)}
             target="_blank"
             rel="noopener noreferrer"
@@ -96,6 +91,11 @@ function PreviewModal({ preview, onClose }: { preview: Preview; onClose: () => v
           >
             <WhatsAppIcon /> <span className="hide-xs">Enquire on WhatsApp</span>
           </a>
+          {preview.kind === "site" && (
+            <a className="icon-btn" href={preview.url} target="_blank" rel="noopener noreferrer" aria-label="Open in a new tab" title="Open in a new tab">
+              <ExternalIcon />
+            </a>
+          )}
           <button ref={closeRef} className="icon-btn" onClick={onClose} aria-label="Close preview"><CloseIcon /></button>
         </div>
 
