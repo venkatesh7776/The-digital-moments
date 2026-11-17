@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { whatsappLink } from "@/data/site";
 import { track } from "@/lib/track";
-import { CloseIcon, ExternalIcon, MonitorIcon, PhoneIcon, WhatsAppIcon } from "../Icons";
+import { CheckIcon, CloseIcon, ExternalIcon, MonitorIcon, PhoneIcon, ShareIcon, WhatsAppIcon } from "../Icons";
 import { EASE } from "../motion/Reveal";
 import { QrHowItWorks } from "../sections/QrHowItWorks";
 import { useSmoothScroll } from "./SmoothScroll";
@@ -25,7 +25,14 @@ export function PreviewProvider({ children }: { children: React.ReactNode }) {
     track("preview_open", { kind: p.kind, title: p.title });
     setPreview(p);
   }, []);
-  const close = useCallback(() => setPreview(null), []);
+  const close = useCallback(() => {
+    setPreview(null);
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("preview")) {
+      url.searchParams.delete("preview");
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    }
+  }, []);
 
   useEffect(() => {
     if (!preview) return;
@@ -40,6 +47,32 @@ export function PreviewProvider({ children }: { children: React.ReactNode }) {
       {children}
       <AnimatePresence>{preview && <PreviewModal key="modal" preview={preview} onClose={close} />}</AnimatePresence>
     </Ctx.Provider>
+  );
+}
+
+/** Shares a link that reopens this popup (/?preview=video|qr). Native share sheet on phones, copy-link elsewhere. */
+function ShareButton({ preview }: { preview: Preview }) {
+  const [copied, setCopied] = useState(false);
+
+  const share = async () => {
+    const url = `${window.location.origin}/?preview=${preview.kind}`;
+    track("share_click", { kind: preview.kind, title: preview.title });
+    if (navigator.share) {
+      // URL only — some share targets ("Copy", Notes) glue `text` onto the link and break it
+      try { await navigator.share({ title: preview.title, url }); } catch { /* user cancelled */ }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { window.prompt("Copy this link", url); }
+  };
+
+  return (
+    <button className="icon-btn" onClick={share} aria-label={copied ? "Link copied" : "Share"} title={copied ? "Link copied!" : "Share"}>
+      {copied ? <CheckIcon /> : <ShareIcon />}
+    </button>
   );
 }
 
@@ -96,6 +129,7 @@ function PreviewModal({ preview, onClose }: { preview: Preview; onClose: () => v
               <ExternalIcon />
             </a>
           )}
+          {preview.kind !== "site" && <ShareButton preview={preview} />}
           <button ref={closeRef} className="icon-btn" onClick={onClose} aria-label="Close preview"><CloseIcon /></button>
         </div>
 

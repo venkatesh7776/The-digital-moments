@@ -45,6 +45,8 @@ export function Loader() {
   useEffect(() => {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
+    // Shared preview links (/?preview=video) skip the intro so the popup is the first thing seen
+    if (new URLSearchParams(window.location.search).has("preview")) { const t = setTimeout(() => { markLoaded(); setPhase("done"); }, 0); return () => clearTimeout(t); }
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const start = performance.now();
     const minMs = reduce ? 400 : MIN_MS;

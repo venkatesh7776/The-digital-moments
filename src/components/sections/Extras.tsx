@@ -19,6 +19,15 @@ export function Extras() {
   const watch = () => open({ kind: "video", title: v.name, subtitle: `Video invitation · ${v.duration} min`, src: v.src, poster: v.poster, buyMessage: enquiryMessage(extras.videoName) });
   const tryQr = () => open({ kind: "qr", title: qrExperience.name, subtitle: "How it works · Guest photo sharing", buyMessage: enquiryMessage(qrExperience.name) });
 
+  // Shareable deep links: /?preview=video or /?preview=qr opens that popup straight away
+  useEffect(() => {
+    // First word only, so a link with extra text stuck on the end still works
+    const p = new URLSearchParams(window.location.search).get("preview")?.trim().split(/\s+/)[0].toLowerCase();
+    if (p === "video") watch();
+    else if (p === "qr") tryQr();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // QR phone cycles scan → upload → gallery while visible
   const [step, setStep] = useState(0);
   const qrRef = useRef<HTMLDivElement>(null);
