@@ -36,13 +36,11 @@ export function Hero() {
     }, 1100);
   };
 
-  // 3 live theme heroes + the video invitation's monogram — repeated round the ring
-  const items: CarouselItem[] = [
-    { src: "/themes/theme-1-hero.webp?v=2", label: `${themes[0].name} wedding website — see price and details`, title: themes[0].name, kind: "Wedding website", onClick: goToCard(`theme-${themes[0].slug}`, themes[0].name) },
-    { src: "/themes/theme-2-hero.webp?v=2", label: `${themes[1].name} wedding website — see price and details`, title: themes[1].name, kind: "Wedding website", onClick: goToCard(`theme-${themes[1].slug}`, themes[1].name) },
-    { src: "/work/storybook-monogram.webp?v=2", label: "Watercolour Storybook video invitation — see price and details", title: "Watercolour Storybook", kind: "Video invite", onClick: goToCard("video-card", "Video Invitation") },
-    { src: "/themes/theme-3-hero.webp?v=2", label: `${themes[2].name} wedding website — see price and details`, title: themes[2].name, kind: "Wedding website", onClick: goToCard(`theme-${themes[2].slug}`, themes[2].name) },
-  ];
+  // Live theme heroes + the video invitation's monogram — repeated round the ring
+  const themeItem = (t: (typeof themes)[number]): CarouselItem => ({ src: t.heroImage, label: `${t.name} wedding website — see price and details`, title: t.name, kind: "Wedding website", onClick: goToCard(`theme-${t.slug}`, t.name) });
+  const video: CarouselItem = { src: "/work/storybook-monogram.webp?v=2", label: "Watercolour Storybook video invitation — see price and details", title: "Watercolour Storybook", kind: "Video invite", onClick: goToCard("video-card", "Video Invitation") };
+  // Same order as the theme cards, with the video invite in third place
+  const items: CarouselItem[] = [...themes.slice(0, 2).map(themeItem), video, ...themes.slice(2).map(themeItem)];
 
   // Lowest theme price (after the sale discount) for the "Starting at" line
   const prices = themes.map((t) => t.price).filter((p): p is number => p !== null);

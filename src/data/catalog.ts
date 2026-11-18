@@ -17,6 +17,7 @@ export interface Theme {
   demoUrl: string;
   mobileImage: string;
   desktopImage: string;
+  heroImage: string; // 9:16 shot used in the hero carousel
   accent: string; // muted tint used behind the device mockup
 }
 
@@ -57,6 +58,18 @@ export interface Testimonial {
 
 export const themes: Theme[] = [
   {
+    slug: "south-indian-temple",
+    name: "South Indian Temple Theme",
+    tier: "Wedding website · Premium",
+    price: 3000,
+    summary: "Mango-leaf thoranam, marigolds, kolam motifs and a Ganesha blessing — a classic South Indian wedding welcome.",
+    demoUrl: "https://vijayrashmika-wedding.vercel.app/",
+    mobileImage: "/themes/theme-4-mobile.webp?v=3",
+    desktopImage: "/themes/theme-4-desktop.webp?v=3",
+    heroImage: "/themes/theme-4-hero.webp?v=3",
+    accent: "#F3E3D3",
+  },
+  {
     slug: "temple",
     name: "Temple Theme",
     tier: "Wedding website · Premium",
@@ -65,6 +78,7 @@ export const themes: Theme[] = [
     demoUrl: "https://www.muralivarshitha.in/",
     mobileImage: "/themes/theme-1-mobile.webp?v=2",
     desktopImage: "/themes/theme-1-desktop.webp?v=2",
+    heroImage: "/themes/theme-1-hero.webp?v=2",
     accent: "#F6E6D3",
   },
   {
@@ -76,6 +90,7 @@ export const themes: Theme[] = [
     demoUrl: "https://sahlaabdulbasith.vercel.app/",
     mobileImage: "/themes/theme-2-mobile.webp?v=2",
     desktopImage: "/themes/theme-2-desktop.webp?v=2",
+    heroImage: "/themes/theme-2-hero.webp?v=2",
     accent: "#E3E6E2",
   },
   {
@@ -87,6 +102,7 @@ export const themes: Theme[] = [
     demoUrl: "https://wedding-tau-ivory.vercel.app/",
     mobileImage: "/themes/theme-3-mobile.webp?v=2",
     desktopImage: "/themes/theme-3-desktop.webp?v=2",
+    heroImage: "/themes/theme-3-hero.webp?v=2",
     accent: "#F4DFD5",
   },
 ];
