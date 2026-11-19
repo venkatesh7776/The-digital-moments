@@ -1,19 +1,24 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { Fragment, useEffect, useState } from "react";
-import { formatPrice, themes } from "@/data/catalog";
-import { hero, saleBar, salePrice } from "@/data/content";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { formatPrice, themes, videoInvites } from "@/data/catalog";
+import { extras, hero, saleBar, salePrice } from "@/data/content";
+import { enquiryMessage } from "@/data/site";
 import { track } from "@/lib/track";
+import { Akshata } from "../Akshata";
+import { HeroKolams } from "../HeroDecor";
 import { CurvedCarousel, type CarouselItem } from "../CurvedCarousel";
 import { useAfterLoader } from "../Loader";
 import { EASE } from "../motion/Reveal";
+import { usePreview } from "../providers/PreviewProvider";
 import { useSmoothScroll } from "../providers/SmoothScroll";
 
 export function Hero() {
   const ready = useAfterLoader();
   const { scrollTo } = useSmoothScroll();
   const [atTop, setAtTop] = useState(true);
+  const ringRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const on = () => setAtTop(window.scrollY < 80);
@@ -22,23 +27,30 @@ export function Hero() {
     return () => window.removeEventListener("scroll", on);
   }, []);
 
-  /** Scroll to the matching card (with price + Enquire) and briefly spotlight it. */
-  const goToCard = (id: string, name: string) => () => {
-    track("carousel_click", { item: name });
-    scrollTo(`#${id}`);
-    const el = document.getElementById(id);
-    if (!el) return;
-    window.setTimeout(() => {
-      el.classList.remove("is-spotlight");
-      void el.offsetWidth; // restart the animation
-      el.classList.add("is-spotlight");
-      window.setTimeout(() => el.classList.remove("is-spotlight"), 2400);
-    }, 1100);
+  // Carousel cards open the live preview straight away (price + WhatsApp inside); closing it offers a recap
+  const { open } = usePreview();
+  const themeItem = (t: (typeof themes)[number]): CarouselItem => ({
+    src: t.heroImage,
+    label: `Preview the ${t.name} wedding website`,
+    title: t.name,
+    kind: "Wedding website",
+    onClick: () => {
+      track("carousel_click", { item: t.name });
+      open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, image: t.heroImage, source: "hero" });
+    },
+  });
+  const v = videoInvites[0];
+  const videoThumb = "/work/storybook-monogram.webp?v=2";
+  const video: CarouselItem = {
+    src: videoThumb,
+    label: `Watch the ${v.name} video invitation`,
+    title: v.name,
+    kind: "Video invite",
+    onClick: () => {
+      track("carousel_click", { item: "Video Invitation" });
+      open({ kind: "video", title: v.name, subtitle: `Video invitation · ${v.duration} min`, src: v.src, poster: v.poster, buyMessage: enquiryMessage(extras.videoName), price: v.price, image: videoThumb, source: "hero" });
+    },
   };
-
-  // Live theme heroes + the video invitation's monogram — repeated round the ring
-  const themeItem = (t: (typeof themes)[number]): CarouselItem => ({ src: t.heroImage, label: `${t.name} wedding website — see price and details`, title: t.name, kind: "Wedding website", onClick: goToCard(`theme-${t.slug}`, t.name) });
-  const video: CarouselItem = { src: "/work/storybook-monogram.webp?v=2", label: "Watercolour Storybook video invitation — see price and details", title: "Watercolour Storybook", kind: "Video invite", onClick: goToCard("video-card", "Video Invitation") };
   // Same order as the theme cards, with the video invite in third place
   const items: CarouselItem[] = [...themes.slice(0, 2).map(themeItem), video, ...themes.slice(2).map(themeItem)];
 
@@ -55,6 +67,7 @@ export function Hero() {
 
   return (
     <section id="home" className="hero" aria-label="The Digital Moments">
+      <HeroKolams />
       <div className="container hero__inner">
         <div className="hero__brand">
           <div className="hero__logo" style={{ opacity: ready ? 1 : 0 }}>
@@ -105,7 +118,9 @@ export function Hero() {
         </motion.p>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 80 }} animate={ready ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.6, ease: EASE, delay: 0.3 }}>
+      {ready && <Akshata landRef={ringRef} />}
+
+      <motion.div ref={ringRef} className="hero__ring" initial={{ opacity: 0, y: 80 }} animate={ready ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.6, ease: EASE, delay: 0.3 }}>
         <CurvedCarousel items={items} />
       </motion.div>
 

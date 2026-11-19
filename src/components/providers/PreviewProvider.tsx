@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { formatPrice, type Price } from "@/data/catalog";
+import { saleBar, salePrice } from "@/data/content";
 import { whatsappLink } from "@/data/site";
 import { track } from "@/lib/track";
 import { CheckIcon, CloseIcon, ExternalIcon, MonitorIcon, PhoneIcon, ShareIcon, WhatsAppIcon } from "../Icons";
@@ -9,44 +11,134 @@ import { EASE } from "../motion/Reveal";
 import { QrHowItWorks } from "../sections/QrHowItWorks";
 import { useSmoothScroll } from "./SmoothScroll";
 
-export type Preview =
-  | { kind: "site"; title: string; subtitle: string; url: string; buyMessage: string }
-  | { kind: "video"; title: string; subtitle: string; src: string; poster: string; buyMessage: string }
-  | { kind: "qr"; title: string; subtitle: string; buyMessage: string };
+type PreviewBase = {
+  title: string;
+  subtitle: string;
+  buyMessage: string;
+  /** Full price (before the sale). null → "Price on request"; undefined → no price strip */
+  price?: Price;
+  /** Thumbnail for the "recently viewed" popup */
+  image?: string;
+  /** "hero" = opened from the hero carousel → closing it offers the recently-viewed popup */
+  source?: "hero" | "card";
+};
+
+export type Preview = PreviewBase &
+  (
+    | { kind: "site"; url: string }
+    | { kind: "video"; src: string; poster: string }
+    | { kind: "qr" }
+  );
 
 const Ctx = createContext<{ open: (p: Preview) => void }>({ open: () => {} });
 export const usePreview = () => useContext(Ctx);
 
 export function PreviewProvider({ children }: { children: React.ReactNode }) {
   const [preview, setPreview] = useState<Preview | null>(null);
+  // The hero-carousel preview just closed → shown in the "Interested?" popup
+  const [recap, setRecap] = useState<Preview | null>(null);
   const { lock, unlock } = useSmoothScroll();
 
   const open = useCallback((p: Preview) => {
-    track("preview_open", { kind: p.kind, title: p.title });
+    track("preview_open", { kind: p.kind, title: p.title, from: p.source ?? "card" });
+    setRecap(null);
     setPreview(p);
   }, []);
   const close = useCallback(() => {
+    // Only visitors who came straight from the hero carousel (and haven't seen the cards with prices) get the recap
+    if (preview?.source === "hero") { setRecap(preview); track("recap_shown", { item: preview.title }); }
     setPreview(null);
     const url = new URL(window.location.href);
     if (url.searchParams.has("preview")) {
       url.searchParams.delete("preview");
       window.history.replaceState(null, "", url.pathname + url.search + url.hash);
     }
-  }, []);
+  }, [preview]);
+  const closeRecap = useCallback(() => setRecap(null), []);
 
+  const overlay = Boolean(preview) || recap;
   useEffect(() => {
-    if (!preview) return;
+    if (!overlay) return;
     lock();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    const onKey = (e: KeyboardEvent) => { if (e.key !== "Escape") return; if (preview) close(); else closeRecap(); };
     window.addEventListener("keydown", onKey);
     return () => { window.removeEventListener("keydown", onKey); unlock(); };
-  }, [preview, close, lock, unlock]);
+  }, [overlay, preview, close, closeRecap, lock, unlock]);
 
   return (
     <Ctx.Provider value={{ open }}>
       {children}
-      <AnimatePresence>{preview && <PreviewModal key="modal" preview={preview} onClose={close} />}</AnimatePresence>
+      <AnimatePresence>
+        {preview && <PreviewModal key="modal" preview={preview} onClose={close} />}
+        {!preview && recap && <RecapModal key="recap" item={recap} onOpen={open} onClose={closeRecap} />}
+      </AnimatePresence>
     </Ctx.Provider>
+  );
+}
+
+/** Sale price · struck-out price · "10% off" — bold and highlighted inside the preview. */
+function PriceTag({ price }: { price: Price }) {
+  if (price === null) return <span className="ptag"><b>Price on request</b></span>;
+  const onSale = saleBar.enabled;
+  return (
+    <span className="ptag">
+      <b>{formatPrice(salePrice(price))}</b>
+      {onSale && <><s>{formatPrice(price)}</s><em>{saleBar.discountPercent}% off</em></>}
+    </span>
+  );
+}
+
+const CUSTOM_MESSAGE = "Hi, Venkatesh! I'd like a wedding website in my own custom theme. Could you share the details?";
+
+/** Shown after closing a preview opened from the hero carousel: the design they just saw + one tap to enquire. */
+function RecapModal({ item, onOpen, onClose }: { item: Preview; onOpen: (p: Preview) => void; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => { closeRef.current?.focus(); }, []);
+  return (
+    <motion.div
+      className="modal modal--recap"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="recap-title"
+      data-lenis-prevent
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.3 } }}
+      transition={{ duration: 0.3 }}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <motion.div
+        className="recap"
+        initial={{ y: 40, opacity: 0, scale: 0.97 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: 24, opacity: 0, scale: 0.98 }}
+        transition={{ duration: 0.5, ease: EASE }}
+      >
+        <button ref={closeRef} className="icon-btn recap__close" onClick={onClose} aria-label="Close"><CloseIcon /></button>
+        <button className="recap__thumb" onClick={() => { track("recap_reopen", { item: item.title }); onOpen(item); }} aria-label={`View ${item.title} again`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {item.image && <img src={item.image} alt="" />}
+          <span className="recap__again">View again</span>
+        </button>
+        <div className="recap__body">
+          <h2 id="recap-title" className="recap__title">Interested in this design?</h2>
+          <span className="recap__name"><b>{item.title}</b></span>
+          {item.price !== undefined && <PriceTag price={item.price} />}
+          <a
+            className="btn btn--whatsapp"
+            href={whatsappLink(item.buyMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("buy_click", { item: item.title, from: "recap" })}
+          >
+            <WhatsAppIcon /> I’m interested
+          </a>
+          <div className="recap__links">
+            <a href={whatsappLink(CUSTOM_MESSAGE)} target="_blank" rel="noopener noreferrer" onClick={() => track("buy_click", { item: "Custom theme", from: "recap" })}>Want a custom design?</a>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -106,7 +198,7 @@ function PreviewModal({ preview, onClose }: { preview: Preview; onClose: () => v
         <div className="modal__bar">
           <div className="modal__title">
             <b>{preview.title}</b>
-            <span>{preview.subtitle}</span>
+            {preview.price !== undefined && preview.price !== null ? <PriceTag price={preview.price} /> : <span>{preview.subtitle}</span>}
           </div>
 
           {preview.kind === "site" && (

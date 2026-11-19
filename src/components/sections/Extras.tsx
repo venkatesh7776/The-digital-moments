@@ -16,7 +16,7 @@ export function Extras() {
   const { open } = usePreview();
   const v = videoInvites[0];
 
-  const watch = () => open({ kind: "video", title: v.name, subtitle: `Video invitation · ${v.duration} min`, src: v.src, poster: v.poster, buyMessage: enquiryMessage(extras.videoName) });
+  const watch = () => open({ kind: "video", title: v.name, subtitle: `Video invitation · ${v.duration} min`, src: v.src, poster: v.poster, buyMessage: enquiryMessage(extras.videoName), price: v.price, source: "card" });
   const tryQr = () => open({ kind: "qr", title: qrExperience.name, subtitle: "How it works · Guest photo sharing", buyMessage: enquiryMessage(qrExperience.name) });
 
   // Shareable deep links: /?preview=video or /?preview=qr opens that popup straight away

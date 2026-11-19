@@ -17,7 +17,8 @@ export function CurvedCarousel({ items, speed = 0.28, curve = 11 }: Props) {
   const state = useRef({ angle: 0, vel: 0, dragging: false, hoverUntil: 0, lastX: 0, moved: 0, visible: true });
 
   // Repeat items so the ring is always full
-  const count = Math.max(items.length * 2, 16);
+  // a whole number of copies, so the same card never ends up next to itself where the ring wraps
+  const count = Math.max(2, Math.ceil(16 / items.length)) * items.length;
   const ring = Array.from({ length: count }, (_, i) => items[i % items.length]);
 
   useEffect(() => {

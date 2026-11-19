@@ -1,13 +1,13 @@
 "use client";
 
-import { formatPrice, themes } from "@/data/catalog";
+import { themes } from "@/data/catalog";
 import { enquiryMessage, whatsappLink } from "@/data/site";
 import { track } from "@/lib/track";
 import { Sparkle, WhatsAppIcon } from "../Icons";
 import { Reveal } from "../motion/Reveal";
 import { ProductInfo } from "../ProductInfo";
 import { usePreview } from "../providers/PreviewProvider";
-import { collection, saleBar, salePrice } from "@/data/content";
+import { collection } from "@/data/content";
 import { LineReveal } from "../motion/Reveal";
 
 export function Themes() {
@@ -25,11 +25,11 @@ export function Themes() {
         <div className="themes-grid">
           {themes.map((t, i) => {
             const demo = () =>
-              open({ kind: "site", title: t.name, subtitle: t.price !== null ? `Live demo · ${formatPrice(salePrice(t.price))}${saleBar.enabled ? ` (${saleBar.discountPercent}% off)` : ""}` : "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name) });
+              open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, image: t.heroImage, source: "card" });
             return (
               <Reveal key={t.slug} delay={(i % 3) * 0.12} style={{ height: "100%" }}>
                 <article className="card theme-card" id={`theme-${t.slug}`} style={{ height: "100%" }}>
-                  <div className="theme-card__media" style={{ background: t.accent }} onClick={demo} role="button" tabIndex={-1} aria-hidden>
+                  <div className="theme-card__media" style={{ background: `radial-gradient(120% 95% at 50% 18%, #ffffff 0%, #fffdfa 38%, ${t.accent} 100%)` }} onClick={demo} role="button" tabIndex={-1} aria-hidden>
                     <div className="theme-card__badges">
                       <span className="chip chip--neutral"><span className="live-dot" /> Live website</span>
                     </div>

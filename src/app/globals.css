@@ -860,3 +860,86 @@ html.has-cursor iframe { cursor: auto !important; }
 /* Hero price line: label + price group; on phones the price group drops to its own line */
 .hero__from-price { display: inline-flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 4px 8px; }
 @media (max-width: 640px) { .hero__from { flex-direction: column; gap: 6px; } }
+
+/* ---------- Akshintalu (one shower of turmeric rice on load) ---------- */
+.akshata { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; --land: 70vh; }
+.akshata__fall { position: absolute; top: 0; width: 0; height: 0; opacity: 0; animation: akFall var(--dur) cubic-bezier(0.4, 0.05, 0.7, 0.55) var(--delay) 1 both; will-change: transform, opacity; }
+.akshata__grain { position: absolute; left: -2px; top: -5px; display: block; width: 4px; height: 9px; border-radius: 50%;
+  background: radial-gradient(ellipse at 35% 30%, #ffe08a 0%, #f2b21f 45%, #d9890f 100%);
+  box-shadow: 0 1px 1px rgba(150, 80, 0, 0.25);
+  animation: akSpin var(--dur) linear var(--delay) 1 both; }
+@keyframes akFall {
+  0% { transform: translate3d(0, -30px, 0); opacity: 0; }
+  5% { opacity: 1; }
+  88% { transform: translate3d(var(--drift), calc(var(--land) + var(--depth)), 0); opacity: 1; }
+  100% { transform: translate3d(var(--drift), calc(var(--land) + var(--depth) + 4px), 0); opacity: 0; }
+}
+@keyframes akSpin { from { transform: scale(var(--s, 1)) rotate(0deg); } to { transform: scale(var(--s, 1)) rotate(var(--spin)); } }
+@media (max-width: 640px) { .akshata__fall:nth-child(n + 131) { display: none; } } /* 130 grains on phones */
+@media (prefers-reduced-motion: reduce) { .akshata { display: none; } }
+
+/* ---------- Highlighted price in the preview bar + recap ---------- */
+.ptag { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 2px 7px; font-family: var(--font-sans); line-height: 1.15; }
+.ptag b { font-size: 1rem; font-weight: 800; letter-spacing: -0.01em; color: var(--gold-deep); }
+.ptag s { font-size: 0.75rem; color: var(--text-3); text-decoration-thickness: 1.5px; }
+.ptag em { align-self: center; font-style: normal; font-size: 0.6875rem; font-weight: 700; color: var(--gold-deep); background: var(--surface-gold); border: 1px solid #f0dcbc; padding: 1px 7px; border-radius: 999px; }
+.modal__title .ptag { margin-top: 3px; }
+.modal__title .ptag b { font-family: var(--font-sans); font-size: 1.0625rem; font-weight: 800; white-space: nowrap; }
+
+/* ---------- "Interested?" popup after closing a hero preview ---------- */
+.modal--recap { align-items: center; justify-content: center; padding: 16px; }
+.recap { position: relative; width: min(520px, 100%); max-height: calc(100dvh - 32px); overflow: auto; background: var(--surface); border-radius: var(--r-xl); box-shadow: var(--shadow-lg); padding: 28px; display: grid; grid-template-columns: minmax(120px, 42%) 1fr; gap: 28px; align-items: center; }
+.recap__close { position: absolute; top: 10px; right: 10px; z-index: 1; }
+.recap__thumb { position: relative; width: 100%; aspect-ratio: 9 / 16; border-radius: var(--r-lg); overflow: hidden; background: var(--beige); padding: 0; border: 0; cursor: pointer; box-shadow: var(--shadow-md); }
+.recap__thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease); }
+.recap__thumb:hover img { transform: scale(1.04); }
+.recap__again { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); padding: 5px 12px; font-size: 0.75rem; font-weight: 700; color: var(--text); background: rgba(255, 255, 255, 0.92); border-radius: 999px; white-space: nowrap; }
+.recap__body { display: grid; gap: 12px; align-content: center; padding-right: 8px; }
+.recap__eyebrow { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); }
+.recap__title { margin: 0; font-family: var(--font-sans); font-weight: 800; letter-spacing: -0.03em; font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.5rem); line-height: 1.15; color: var(--text); }
+.recap__name { font-size: 0.875rem; color: var(--text-2); }
+.recap__name b { color: var(--text); font-weight: 700; }
+.recap__body .ptag b { font-size: 1.25rem; }
+.recap__body .btn { border-radius: 999px; width: 100%; }
+.recap__links { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.8125rem; }
+.recap__links a, .recap__links button { background: none; border: 0; padding: 0; color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font: inherit; }
+.recap__links a { color: var(--gold-deep); font-weight: 600; }
+@media (max-width: 480px) {
+  .recap { padding: 60px 20px 24px; gap: 20px; grid-template-columns: 44% 1fr; }
+  .recap__body { padding-right: 0; }
+}
+
+
+/* ---------- Offer bar: light-gold border of small sikku-kolam knots ---------- */
+.salebar { isolation: isolate; border-bottom: 1px solid rgba(233, 196, 122, 0.35); }
+.salebar::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2242%22 viewBox=%220 0 48 42%22%3E%3Cg fill=%22none%22 stroke=%22%23e9c47a%22 stroke-width=%221.1%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M16.00 18.36C18.16 18.36 18.47 19.47 20.00 21.00C18.47 22.53 18.16 23.64 16.00 23.64C14.43 23.64 13.36 22.57 13.36 21.00C13.36 19.43 14.43 18.36 16.00 18.36Z%22/%3E%3Cpath d=%22M24.00 10.36C25.57 10.36 26.64 11.43 26.64 13.00C26.64 15.16 25.53 15.47 24.00 17.00C22.47 15.47 21.36 15.16 21.36 13.00C21.36 11.43 22.43 10.36 24.00 10.36Z%22/%3E%3Cpath d=%22M24.00 17.00L28.00 21.00L24.00 25.00L20.00 21.00L24.00 17.00Z%22/%3E%3Cpath d=%22M24.00 25.00C25.53 26.53 26.64 26.84 26.64 29.00C26.64 30.57 25.57 31.64 24.00 31.64C22.43 31.64 21.36 30.57 21.36 29.00C21.36 26.84 22.47 26.53 24.00 25.00Z%22/%3E%3Cpath d=%22M32.00 18.36C33.57 18.36 34.64 19.43 34.64 21.00C34.64 22.57 33.57 23.64 32.00 23.64C29.84 23.64 29.53 22.53 28.00 21.00C29.53 19.47 29.84 18.36 32.00 18.36Z%22/%3E%3C/g%3E%3Cg fill=%22%23e9c47a%22%3E%3Ccircle cx=%2224.0%22 cy=%2229.0%22 r=%220.9%22/%3E%3Ccircle cx=%2216.0%22 cy=%2221.0%22 r=%220.9%22/%3E%3Ccircle cx=%2224.0%22 cy=%2221.0%22 r=%220.9%22/%3E%3Ccircle cx=%2232.0%22 cy=%2221.0%22 r=%220.9%22/%3E%3Ccircle cx=%2224.0%22 cy=%2213.0%22 r=%220.9%22/%3E%3Ccircle cx=%220%22 cy=%2221%22 r=%221.1%22/%3E%3Ccircle cx=%2248%22 cy=%2221%22 r=%221.1%22/%3E%3C/g%3E%3C/svg%3E") repeat-x center / auto 30px; opacity: 0.45;
+  /* fade the pattern out behind the offer text in the middle */
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 20%, transparent 31%, transparent 69%, #000 80%, #000 100%);
+          mask-image: linear-gradient(90deg, #000 0%, #000 20%, transparent 31%, transparent 69%, #000 80%, #000 100%); }
+.salebar__inner { position: relative; }
+@media (max-width: 640px) {
+  /* one whole knot at each end */
+  .salebar::before { opacity: 0.55; background-repeat: space no-repeat; background-size: auto 26px; background-position: center;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 34px, transparent 35px, transparent calc(100% - 35px), #000 calc(100% - 34px));
+            mask-image: linear-gradient(90deg, #000 0, #000 34px, transparent 35px, transparent calc(100% - 35px), #000 calc(100% - 34px)); }
+}
+
+/* ---------- Hero side kolams ---------- */
+.hd-kolams { position: absolute; inset: 0 0 auto; height: 620px; z-index: 0; pointer-events: none; overflow: hidden; }
+.hd-kolam { position: absolute; display: block; }
+.hd-kolam--m { display: none; }
+@media (max-width: 1023px) {
+  .hd-kolam { display: none; }
+  .hd-kolam.hd-kolam--m { display: block; }
+}
+
+/* ---------- Dusty parchment background for the whole landing page ---------- */
+:root { --paper: #f8f0e4; --paper-texture: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22640%22%3E%3Cfilter id=%22n%22 x=%220%22 y=%220%22 width=%22100%25%22 height=%22100%25%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.0065%22 numOctaves=%224%22 seed=%227%22 stitchTiles=%22stitch%22/%3E%3CfeColorMatrix values=%220 0 0 0 0.85  0 0 0 0 0.72  0 0 0 0 0.52  0 0 0 1.5 -0.62%22/%3E%3C/filter%3E%3Crect width=%22640%22 height=%22640%22 filter=%22url%28%23n%29%22/%3E%3C/svg%3E"); }
+body { background-color: var(--paper); background-image: var(--paper-texture); background-size: 640px 640px; }
+/* sections sit directly on the parchment (cards, panels and the dark footer keep their own fills) */
+.hero, .collection, .extras, .testimonials, .contact-v2, .section--white, .section--cream { background: transparent; }
+
+/* Theme cards stand off the parchment: crisp edge + soft lift */
+.collection .theme-card { background: var(--white); border: 1px solid rgba(201, 163, 90, 0.28); box-shadow: 0 1px 2px rgba(80, 55, 20, 0.05), 0 18px 40px -22px rgba(80, 55, 20, 0.28); }
+.collection .theme-card__media { border-bottom-color: rgba(201, 163, 90, 0.22); }
