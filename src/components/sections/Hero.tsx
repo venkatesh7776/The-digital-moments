@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { formatPrice, themes, videoInvites } from "@/data/catalog";
-import { extras, hero, saleBar, salePrice } from "@/data/content";
+import { discountPercent, extras, hero, saleBar, salePrice } from "@/data/content";
 import { enquiryMessage } from "@/data/site";
 import { track } from "@/lib/track";
 import { markJump } from "@/lib/view-tracking";
@@ -60,7 +60,7 @@ export function Hero() {
     kind: "Wedding website",
     onClick: () => {
       cardClick(t.slug, t.name, position, "wedding_website");
-      open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, image: t.heroImage, source: "hero" });
+      open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, offerPrice: t.offerPrice, image: t.heroImage, source: "hero" });
     },
   });
   const v = videoInvites[0];
@@ -82,10 +82,11 @@ export function Hero() {
     ...themes.slice(2).map((t, i) => themeItem(t, i + 4)),
   ];
 
-  // Lowest theme price (after the sale discount) for the "Starting at" line
-  const prices = themes.map((t) => t.price).filter((p): p is number => p !== null);
-  const fromFull = Math.min(...prices);
-  const fromSale = salePrice(fromFull);
+  // Lowest theme price during the sale for the "start from" line (with that theme's original price and % off)
+  const cheapest = themes.filter((t) => t.price !== null).reduce((a, b) => (salePrice(b.price as number, b.offerPrice) < salePrice(a.price as number, a.offerPrice) ? b : a));
+  const fromFull = cheapest.price as number;
+  const fromSale = salePrice(fromFull, cheapest.offerPrice);
+  const fromOff = discountPercent(fromFull, cheapest.offerPrice);
 
   const show = (delay: number) => ({
     initial: { opacity: 0, y: 28, filter: "blur(6px)" },
@@ -141,7 +142,7 @@ export function Hero() {
           <span className="hero__from-label">Wedding websites start from</span>
           <span className="hero__from-price">
             <strong>{formatPrice(fromSale)}</strong>
-            {saleBar.enabled && fromSale < fromFull && (<><s>{formatPrice(fromFull)}</s><span className="hero__from-tag">{saleBar.discountPercent}% off · Wedding Sale</span></>)}
+            {saleBar.enabled && fromSale < fromFull && (<><s>{formatPrice(fromFull)}</s><span className="hero__from-tag">{fromOff}% off · Wedding Sale</span></>)}
           </span>
         </motion.p>
       </div>

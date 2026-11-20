@@ -64,7 +64,7 @@ export function Themes() {
         <div className="themes-grid">
           {themes.map((t, i) => {
             const demo = () =>
-              open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, image: t.heroImage, source: "card" });
+              open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, offerPrice: t.offerPrice, image: t.heroImage, source: "card" });
             return (
               <Reveal key={t.slug} delay={(i % 3) * 0.12} style={{ height: "100%" }}>
                 <article ref={(el) => { cardRefs.current[i] = el; }} className="card theme-card" id={`theme-${t.slug}`} style={{ height: "100%" }}>
@@ -85,7 +85,7 @@ export function Themes() {
                       </div>
                     </div>
                   </div>
-                  <ProductInfo name={t.name} tier={t.tier} price={t.price} summary={t.summary} onDemo={demo} />
+                  <ProductInfo name={t.name} tier={t.tier} price={t.price} offerPrice={t.offerPrice} summary={t.summary} onDemo={demo} />
                 </article>
               </Reveal>
             );

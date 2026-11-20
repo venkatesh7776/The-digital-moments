@@ -1,6 +1,7 @@
 "use client";
 
-import { saleBar } from "@/data/content";
+import { themes } from "@/data/catalog";
+import { discountPercent, saleBar } from "@/data/content";
 import { track } from "@/lib/track";
 import { markJump } from "@/lib/view-tracking";
 import { useSmoothScroll } from "./providers/SmoothScroll";
@@ -9,6 +10,7 @@ import { useSmoothScroll } from "./providers/SmoothScroll";
 export function SaleBar() {
   const { scrollTo } = useSmoothScroll();
   if (!saleBar.enabled) return null;
+  const maxOff = Math.max(...themes.map((t) => (t.price !== null ? discountPercent(t.price, t.offerPrice) : 0)));
   const go = (e: React.MouseEvent) => {
     e.preventDefault();
     const onPill = (e.target as HTMLElement).closest(".salebar__cta") !== null;
@@ -21,7 +23,7 @@ export function SaleBar() {
       <a className="salebar__inner" href="#themes" onClick={go}>
         <span className="salebar__label">{saleBar.label}</span>
         <span className="salebar__sep" aria-hidden />
-        <span className="salebar__text">{saleBar.text}</span>
+        <span className="salebar__text">Save up to {maxOff}% on wedding website templates</span>
         <span className="salebar__cta">{saleBar.cta}</span>
       </a>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { formatPrice, type Price } from "@/data/catalog";
-import { saleBar, salePrice } from "@/data/content";
+import { discountPercent, saleBar, salePrice } from "@/data/content";
 import { enquiryMessage, whatsappLink } from "@/data/site";
 import { posthogLog } from "@/lib/posthog-logs";
 import { track } from "@/lib/track";
@@ -11,6 +11,7 @@ type Props = {
   name: string;
   tier: string;
   price: Price;
+  offerPrice?: number;
   summary?: string;
   demoLabel?: string;
   demoIcon?: "play" | "help";
@@ -19,10 +20,10 @@ type Props = {
 };
 
 /** Name · tier · price · [Live demo] [Enquire on WhatsApp] — used on every offer card. */
-export function ProductInfo({ name, tier, price, summary, demoLabel = "Live demo", demoIcon = "play", onDemo, headingLevel = "h3" }: Props) {
+export function ProductInfo({ name, tier, price, offerPrice, summary, demoLabel = "Live demo", demoIcon = "play", onDemo, headingLevel = "h3" }: Props) {
   const H = headingLevel;
-  const onSale = price !== null && saleBar.enabled;
-  const finalPrice = price !== null ? salePrice(price) : null;
+  const onSale = price !== null && saleBar.enabled && salePrice(price, offerPrice) < price;
+  const finalPrice = price !== null ? salePrice(price, offerPrice) : null;
   const message = enquiryMessage(name);
   return (
     <div className="product-info">
@@ -33,7 +34,7 @@ export function ProductInfo({ name, tier, price, summary, demoLabel = "Live demo
         <span className="product-info__price product-info__price--sale">
           <span className="product-info__amount">{formatPrice(finalPrice)}</span>
           <s aria-label={`Original price ${formatPrice(price)}`}>{formatPrice(price)}</s>
-          <em>{saleBar.discountPercent}% off</em>
+          <em>{discountPercent(price as number, offerPrice)}% off</em>
         </span>
       ) : (
         <span className={`product-info__price ${price === null ? "product-info__price--request" : ""}`}>{formatPrice(price)}</span>

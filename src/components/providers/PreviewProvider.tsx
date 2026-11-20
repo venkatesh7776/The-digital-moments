@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { formatPrice, type Price } from "@/data/catalog";
-import { saleBar, salePrice } from "@/data/content";
+import { discountPercent, saleBar, salePrice } from "@/data/content";
 import { whatsappLink } from "@/data/site";
 import { posthogLog } from "@/lib/posthog-logs";
 import { track } from "@/lib/track";
@@ -18,6 +18,8 @@ type PreviewBase = {
   buyMessage: string;
   /** Full price (before the sale). null → "Price on request"; undefined → no price strip */
   price?: Price;
+  /** Sale price for themes (see data/catalog.ts) */
+  offerPrice?: number;
   /** Thumbnail for the "recently viewed" popup */
   image?: string;
   /** "hero" = opened from the hero carousel → closing it offers the recently-viewed popup */
@@ -78,14 +80,14 @@ export function PreviewProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Sale price · struck-out price · "10% off" — bold and highlighted inside the preview. */
-function PriceTag({ price }: { price: Price }) {
+/** Sale price · struck-out price · "N% off" — bold and highlighted inside the preview. */
+function PriceTag({ price, offer }: { price: Price; offer?: number }) {
   if (price === null) return <span className="ptag"><b>Price on request</b></span>;
-  const onSale = saleBar.enabled;
+  const onSale = saleBar.enabled && salePrice(price, offer) < price;
   return (
     <span className="ptag">
-      <b>{formatPrice(salePrice(price))}</b>
-      {onSale && <><s>{formatPrice(price)}</s><em>{saleBar.discountPercent}% off</em></>}
+      <b>{formatPrice(salePrice(price, offer))}</b>
+      {onSale && <><s>{formatPrice(price)}</s><em>{discountPercent(price, offer)}% off</em></>}
     </span>
   );
 }
@@ -125,7 +127,7 @@ function RecapModal({ item, onOpen, onClose }: { item: Preview; onOpen: (p: Prev
         <div className="recap__body">
           <h2 id="recap-title" className="recap__title">Interested in this design?</h2>
           <span className="recap__name"><b>{item.title}</b></span>
-          {item.price !== undefined && <PriceTag price={item.price} />}
+          {item.price !== undefined && <PriceTag price={item.price} offer={item.offerPrice} />}
           <a
             className="btn btn--whatsapp"
             href={whatsappLink(item.buyMessage)}
@@ -200,7 +202,7 @@ function PreviewModal({ preview, onClose }: { preview: Preview; onClose: () => v
         <div className="modal__bar">
           <div className="modal__title">
             <b>{preview.title}</b>
-            {preview.price !== undefined && preview.price !== null ? <PriceTag price={preview.price} /> : <span>{preview.subtitle}</span>}
+            {preview.price !== undefined && preview.price !== null ? <PriceTag price={preview.price} offer={preview.offerPrice} /> : <span>{preview.subtitle}</span>}
           </div>
 
           {preview.kind === "site" && (

@@ -42,15 +42,22 @@ export const qrHowItWorks = {
   ],
 };
 
-/** Wedding Sale — top bar + discounted theme prices. Set enabled: false when the sale ends. */
+/**
+ * Wedding Sale — top bar + discounted theme prices. Set enabled: false when the sale ends.
+ * Each theme's sale price is its `offerPrice` in data/catalog.ts; the % off is worked out from it.
+ */
 export const saleBar = {
   enabled: true,
-  discountPercent: 10,
   label: "Wedding Sale",
-  text: "Get 10% off any wedding template",
   cta: "Claim now",
 };
 
-export function salePrice(price: number) {
-  return saleBar.enabled ? Math.round((price * (100 - saleBar.discountPercent)) / 100) : price;
+/** Price to charge: the offer price while the sale runs, otherwise the original. */
+export function salePrice(price: number, offer?: number) {
+  return saleBar.enabled && offer !== undefined && offer < price ? offer : price;
+}
+
+/** Whole-number % saved by the offer (0 when there is no offer). */
+export function discountPercent(price: number, offer?: number) {
+  return Math.round((1 - salePrice(price, offer) / price) * 100);
 }
