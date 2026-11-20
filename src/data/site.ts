@@ -12,8 +12,8 @@ export const site = {
     "The Digital Moments is a digital experience studio creating wedding websites, cinematic video invitations and QR-based memory sharing for weddings and life's special celebrations.",
   url: "https://thedigitalmoments.in", // TODO: replace with the final domain
   whatsappNumber: "917330828654", // country code + number, digits only
-  instagramUrl: "https://www.instagram.com/thedigitalmoments", // TODO: confirm handle
-  instagramHandle: "@thedigitalmoments", // TODO: confirm handle
+  instagramUrl: "https://www.instagram.com/the_digital.moments/",
+  instagramHandle: "@the_digital.moments",
   email: "",
   googleTagId: "GTM-N5Q9VLGH", // Google Tag Manager container (page views)
   gaMeasurementId: "G-KN90E785XQ", // GA4 property the container reports to (button-click events)
