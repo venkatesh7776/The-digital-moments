@@ -1,7 +1,5 @@
 import posthog from "posthog-js";
-
-const token = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
-const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+import { posthogHost as host, posthogToken as token } from "@/lib/posthog-config";
 
 if (token && host) {
   posthog.init(token, {

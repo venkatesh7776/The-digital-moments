@@ -1,10 +1,7 @@
 import posthog from "posthog-js";
+import { posthogConfigured } from "@/lib/posthog-config";
 
 type LogAttributes = Record<string, string | number | boolean>;
-
-const posthogConfigured = Boolean(
-  process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST,
-);
 
 function info(message: string, attributes: LogAttributes) {
   if (!posthogConfigured) return;
