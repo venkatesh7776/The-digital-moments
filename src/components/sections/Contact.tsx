@@ -20,7 +20,7 @@ export function Contact() {
           </h2>
           <Reveal delay={0.15}><p className="collection__sub">Let’s create a digital experience that makes your wedding even more special.</p></Reveal>
           <Reveal delay={0.25} className="contact__actions">
-            <a className="btn btn--dark btn--lg" href={whatsappLink()} target="_blank" rel="noopener noreferrer" onClick={() => { track("whatsapp_click", { from: "contact" }); posthogLog.enquiryStarted("contact_section"); }}>
+            <a className="btn btn--dark btn--lg" href={whatsappLink()} target="_blank" rel="noopener noreferrer" onClick={() => { track("whatsapp_click", { cta_location: "contact_section", cta_name: "whatsapp" }); posthogLog.enquiryStarted("contact_section"); }}>
               <WhatsAppIcon /> Chat on WhatsApp
             </a>
             <a className="btn btn--glass btn--lg" href={site.instagramUrl} target="_blank" rel="noopener noreferrer" onClick={() => track("instagram_click", { from: "contact" })}>
@@ -74,7 +74,7 @@ export function WhatsAppFab() {
           aria-hidden={covering || undefined}
           tabIndex={covering ? -1 : undefined}
           style={{ pointerEvents: covering ? "none" : "auto" }}
-          onClick={() => track("whatsapp_click", { from: "fab" })}
+          onClick={() => track("whatsapp_click", { cta_location: "floating_button", cta_name: "whatsapp" })}
           initial={{ opacity: 0, scale: 0.5, y: 24 }}
           animate={covering ? { opacity: 0, scale: 0.6, y: 24, transition: { duration: 0.2 } } : { opacity: 1, scale: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 240, damping: 20, delay: entered ? 0 : 1.4 }}

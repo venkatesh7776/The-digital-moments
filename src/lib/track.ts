@@ -3,14 +3,15 @@ import posthog from "posthog-js";
 import { posthogConfigured } from "@/lib/posthog-config";
 import { site } from "@/data/site";
 
-type Gtag = (command: "event", name: string, params: Record<string, string>) => void;
+type Props = Record<string, string | number | boolean>;
+type Gtag = (command: "event", name: string, params: Props) => void;
 
 /**
  * CTA click tracking — sent to PostHog, Vercel Analytics, and Google Analytics 4.
  * In GA4 these appear under Reports → Engagement → Events, e.g.
  *   buy_click { item: "Temple Theme", from: "card" }
  */
-export function track(event: string, props: Record<string, string> = {}) {
+export function track(event: string, props: Props = {}) {
   try {
     if (posthogConfigured) posthog.capture(event, props);
   } catch {

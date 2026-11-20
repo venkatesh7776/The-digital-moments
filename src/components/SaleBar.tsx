@@ -8,7 +8,12 @@ import { useSmoothScroll } from "./providers/SmoothScroll";
 export function SaleBar() {
   const { scrollTo } = useSmoothScroll();
   if (!saleBar.enabled) return null;
-  const go = (e: React.MouseEvent) => { e.preventDefault(); track("sale_bar_click"); scrollTo("#themes"); };
+  const go = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const onPill = (e.target as HTMLElement).closest(".salebar__cta") !== null;
+    track("claim_now_click", { cta_location: "announcement_bar", cta_name: "claim_now", promotion_name: "wedding_sale", click_target: onPill ? "claim_now_button" : "banner" });
+    scrollTo("#themes");
+  };
   return (
     <div className="salebar" role="region" aria-label="Offer">
       <a className="salebar__inner" href="#themes" onClick={go}>

@@ -6,6 +6,11 @@ if (token && host) {
     api_host: host,
     defaults: "2026-08-30",
     capture_exceptions: true,
+    // Privacy policy promises cookie-free, non-identifying analytics:
+    // no cookies / local storage (unique visitors via PostHog's server-side daily hash) and no session replay.
+    // Requires "Cookieless server hash mode" to be ON in the PostHog project settings, or events are discarded.
+    cookieless_mode: "always",
+    disable_session_recording: true,
     logs: {
       serviceName: "the-digital-moments-web",
       environment: process.env.NODE_ENV,
