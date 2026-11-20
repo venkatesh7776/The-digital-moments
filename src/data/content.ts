@@ -57,7 +57,8 @@ export function salePrice(price: number, offer?: number) {
   return saleBar.enabled && offer !== undefined && offer < price ? offer : price;
 }
 
-/** Whole-number % saved by the offer (0 when there is no offer). */
-export function discountPercent(price: number, offer?: number) {
-  return Math.round((1 - salePrice(price, offer) / price) * 100);
+/** Whole-number % saved by the offer (0 when there is no offer); `label` overrides the shown % (e.g. Coastal). */
+export function discountPercent(price: number, offer?: number, label?: number) {
+  if (salePrice(price, offer) >= price) return 0;
+  return label ?? Math.round((1 - salePrice(price, offer) / price) * 100);
 }

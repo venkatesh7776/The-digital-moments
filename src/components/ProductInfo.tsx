@@ -12,6 +12,7 @@ type Props = {
   tier: string;
   price: Price;
   offerPrice?: number;
+  offPercent?: number;
   summary?: string;
   demoLabel?: string;
   demoIcon?: "play" | "help";
@@ -20,7 +21,7 @@ type Props = {
 };
 
 /** Name · tier · price · [Live demo] [Enquire on WhatsApp] — used on every offer card. */
-export function ProductInfo({ name, tier, price, offerPrice, summary, demoLabel = "Live demo", demoIcon = "play", onDemo, headingLevel = "h3" }: Props) {
+export function ProductInfo({ name, tier, price, offerPrice, offPercent, summary, demoLabel = "Live demo", demoIcon = "play", onDemo, headingLevel = "h3" }: Props) {
   const H = headingLevel;
   const onSale = price !== null && saleBar.enabled && salePrice(price, offerPrice) < price;
   const finalPrice = price !== null ? salePrice(price, offerPrice) : null;
@@ -34,7 +35,7 @@ export function ProductInfo({ name, tier, price, offerPrice, summary, demoLabel 
         <span className="product-info__price product-info__price--sale">
           <span className="product-info__amount">{formatPrice(finalPrice)}</span>
           <s aria-label={`Original price ${formatPrice(price)}`}>{formatPrice(price)}</s>
-          <em>{discountPercent(price as number, offerPrice)}% off</em>
+          <em>{discountPercent(price as number, offerPrice, offPercent)}% off</em>
         </span>
       ) : (
         <span className={`product-info__price ${price === null ? "product-info__price--request" : ""}`}>{formatPrice(price)}</span>

@@ -60,7 +60,7 @@ export function Hero() {
     kind: "Wedding website",
     onClick: () => {
       cardClick(t.slug, t.name, position, "wedding_website");
-      open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, offerPrice: t.offerPrice, image: t.heroImage, source: "hero" });
+      open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, offerPrice: t.offerPrice, offPercent: t.offPercent, image: t.heroImage, source: "hero" });
     },
   });
   const v = videoInvites[0];
@@ -86,7 +86,7 @@ export function Hero() {
   const cheapest = themes.filter((t) => t.price !== null).reduce((a, b) => (salePrice(b.price as number, b.offerPrice) < salePrice(a.price as number, a.offerPrice) ? b : a));
   const fromFull = cheapest.price as number;
   const fromSale = salePrice(fromFull, cheapest.offerPrice);
-  const fromOff = discountPercent(fromFull, cheapest.offerPrice);
+  const fromOff = discountPercent(fromFull, cheapest.offerPrice, cheapest.offPercent);
 
   const show = (delay: number) => ({
     initial: { opacity: 0, y: 28, filter: "blur(6px)" },

@@ -14,6 +14,7 @@ export interface Theme {
   tier: string;
   price: Price; // original price (shown struck out during the sale)
   offerPrice?: number; // price during the Wedding Sale
+  offPercent?: number; // % shown on the badge, when it should differ from the worked-out one
   summary: string;
   demoUrl: string;
   mobileImage: string;
@@ -62,7 +63,7 @@ export const themes: Theme[] = [
     slug: "south-indian-temple",
     name: "South Indian Temple Theme",
     tier: "Wedding website · Premium",
-    price: 3499,
+    price: 3199,
     offerPrice: 2499,
     summary: "Mango-leaf thoranam, marigolds, kolam motifs and a Ganesha blessing — a classic South Indian wedding welcome.",
     demoUrl: "https://vijayrashmika-wedding.vercel.app/",
@@ -75,8 +76,8 @@ export const themes: Theme[] = [
     slug: "temple",
     name: "Temple Theme",
     tier: "Wedding website · Premium",
-    price: 3499,
-    offerPrice: 2499,
+    price: 4499,
+    offerPrice: 3499,
     summary: "Carved temple pillars, brass bells, diyas and fresh marigold garlands — a warm, traditional welcome.",
     demoUrl: "https://www.muralivarshitha.in/",
     mobileImage: "/themes/theme-1-mobile.webp?v=2",
@@ -88,7 +89,7 @@ export const themes: Theme[] = [
     slug: "noor",
     name: "Noor Theme",
     tier: "Wedding website · Premium",
-    price: 3499,
+    price: 3199,
     offerPrice: 2499,
     summary: "Deep teal arches, glowing lanterns and a graceful verse opening — elegant and serene for a Nikah.",
     demoUrl: "https://sahlaabdulbasith.vercel.app/",
@@ -101,8 +102,9 @@ export const themes: Theme[] = [
     slug: "coastal",
     name: "Coastal Theme",
     tier: "Wedding website · Premium",
-    price: 2799,
+    price: 2599,
     offerPrice: 1999,
+    offPercent: 22,
     summary: "Sunlit seaside photography and refined serif typography — made for destination and beach celebrations.",
     demoUrl: "https://wedding-tau-ivory.vercel.app/",
     mobileImage: "/themes/theme-3-mobile.webp?v=2",
