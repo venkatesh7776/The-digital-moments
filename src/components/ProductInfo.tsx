@@ -3,6 +3,7 @@
 import { formatPrice, type Price } from "@/data/catalog";
 import { saleBar, salePrice } from "@/data/content";
 import { enquiryMessage, whatsappLink } from "@/data/site";
+import { posthogLog } from "@/lib/posthog-logs";
 import { track } from "@/lib/track";
 import { HelpIcon, PlayIcon, WhatsAppIcon } from "./Icons";
 
@@ -41,7 +42,7 @@ export function ProductInfo({ name, tier, price, summary, demoLabel = "Live demo
         <button className="btn btn--secondary" onClick={() => { track("demo_click", { item: name }); onDemo(); }}>
           {demoIcon === "help" ? <HelpIcon /> : <PlayIcon />} {demoLabel}
         </button>
-        <a className="btn btn--primary btn--buy" href={whatsappLink(message)} target="_blank" rel="noopener noreferrer" onClick={() => track("buy_click", { item: name, from: "card" })}>
+        <a className="btn btn--primary btn--buy" href={whatsappLink(message)} target="_blank" rel="noopener noreferrer" onClick={() => { track("buy_click", { item: name, from: "card" }); posthogLog.enquiryStarted("offer_card", tier); }}>
           <WhatsAppIcon /> Enquire on WhatsApp
         </a>
       </div>

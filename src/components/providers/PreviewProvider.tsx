@@ -5,6 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { formatPrice, type Price } from "@/data/catalog";
 import { saleBar, salePrice } from "@/data/content";
 import { whatsappLink } from "@/data/site";
+import { posthogLog } from "@/lib/posthog-logs";
 import { track } from "@/lib/track";
 import { CheckIcon, CloseIcon, ExternalIcon, MonitorIcon, PhoneIcon, ShareIcon, WhatsAppIcon } from "../Icons";
 import { EASE } from "../motion/Reveal";
@@ -41,6 +42,7 @@ export function PreviewProvider({ children }: { children: React.ReactNode }) {
 
   const open = useCallback((p: Preview) => {
     track("preview_open", { kind: p.kind, title: p.title, from: p.source ?? "card" });
+    posthogLog.offerPreviewOpened(p.kind, p.source ?? "card");
     setRecap(null);
     setPreview(p);
   }, []);
