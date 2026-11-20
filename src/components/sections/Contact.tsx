@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useAfterLoader } from "../Loader";
 import { site, whatsappLink } from "@/data/site";
+import { posthogLog } from "@/lib/posthog-logs";
 import { track } from "@/lib/track";
 import { InstagramIcon, WhatsAppIcon } from "../Icons";
 import { LineReveal, Reveal } from "../motion/Reveal";
@@ -19,7 +20,7 @@ export function Contact() {
           </h2>
           <Reveal delay={0.15}><p className="collection__sub">Let’s create a digital experience that makes your wedding even more special.</p></Reveal>
           <Reveal delay={0.25} className="contact__actions">
-            <a className="btn btn--dark btn--lg" href={whatsappLink()} target="_blank" rel="noopener noreferrer" onClick={() => track("whatsapp_click", { from: "contact" })}>
+            <a className="btn btn--dark btn--lg" href={whatsappLink()} target="_blank" rel="noopener noreferrer" onClick={() => { track("whatsapp_click", { from: "contact" }); posthogLog.enquiryStarted("contact_section"); }}>
               <WhatsAppIcon /> Chat on WhatsApp
             </a>
             <a className="btn btn--glass btn--lg" href={site.instagramUrl} target="_blank" rel="noopener noreferrer" onClick={() => track("instagram_click", { from: "contact" })}>
