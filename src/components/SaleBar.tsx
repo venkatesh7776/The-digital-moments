@@ -2,6 +2,7 @@
 
 import { saleBar } from "@/data/content";
 import { track } from "@/lib/track";
+import { markJump } from "@/lib/view-tracking";
 import { useSmoothScroll } from "./providers/SmoothScroll";
 
 /** Offer bar pinned to the top of the screen. Edit it in data/content.ts. */
@@ -12,6 +13,7 @@ export function SaleBar() {
     e.preventDefault();
     const onPill = (e.target as HTMLElement).closest(".salebar__cta") !== null;
     track("claim_now_click", { cta_location: "announcement_bar", cta_name: "claim_now", promotion_name: "wedding_sale", click_target: onPill ? "claim_now_button" : "banner" });
+    markJump("claim_now_click");
     scrollTo("#themes");
   };
   return (

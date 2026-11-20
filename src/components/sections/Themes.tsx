@@ -2,7 +2,9 @@
 
 import { themes } from "@/data/catalog";
 import { enquiryMessage, whatsappLink } from "@/data/site";
+import { useEffect, useRef } from "react";
 import { track } from "@/lib/track";
+import { onSeenFor, recentJump, themesLayout } from "@/lib/view-tracking";
 import { Sparkle, WhatsAppIcon } from "../Icons";
 import { Reveal } from "../motion/Reveal";
 import { ProductInfo } from "../ProductInfo";
@@ -12,9 +14,46 @@ import { LineReveal } from "../motion/Reveal";
 
 export function Themes() {
   const { open } = usePreview();
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
+
+  // second_fold_view — the themes section fills ≥50% of the screen for 1s (once per page load).
+  // Measured against the screen: on phones the section is ~4 cards tall, so "50% of the section" would never happen.
+  // theme_card_view — each theme card ≥50% visible for 1s (once per card per page load); the custom card is not tracked.
+  // Order is kept funnel-friendly: the fold view always goes first, and cards seen at the same moment go out 1 → 4.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    let foldSent = false;
+    const pending: number[] = [];
+    let flushTimer = 0;
+    const sendFold = () => {
+      if (foldSent) return;
+      foldSent = true;
+      track("second_fold_view", { section_name: "themes", fold: 2, entry_method: recentJump() ?? "scroll", layout: themesLayout() });
+    };
+    const flushCards = () => {
+      flushTimer = 0;
+      sendFold();
+      pending.sort((x, y) => x - y).splice(0).forEach((i) => {
+        const t = themes[i];
+        track("theme_card_view", { template_id: t.slug, template_name: t.name, card_position: i + 1, total_cards: themes.length, section_name: "themes", layout: themesLayout() });
+      });
+    };
+    const enough = (e: IntersectionObserverEntry) => e.intersectionRect.height >= 0.5 * Math.min(window.innerHeight, e.boundingClientRect.height);
+    const cleanups = [
+      onSeenFor(section, enough, sendFold),
+      ...themes.map((_, i) => {
+        const card = cardRefs.current[i];
+        if (!card) return () => {};
+        return onSeenFor(card, enough, () => { pending.push(i); if (!flushTimer) flushTimer = window.setTimeout(flushCards, 50); });
+      }),
+    ];
+    return () => { clearTimeout(flushTimer); cleanups.forEach((c) => c()); };
+  }, []);
 
   return (
-    <section id="themes" className="section collection">
+    <section id="themes" ref={sectionRef} className="section collection">
       <div className="container">
         <div className="collection__head">
           <Reveal y={12}><span className="collection__eyebrow"><Sparkle width={10} height={10} /> {collection.eyebrow}</span></Reveal>
@@ -28,7 +67,7 @@ export function Themes() {
               open({ kind: "site", title: t.name, subtitle: "Live demo · Wedding website", url: t.demoUrl, buyMessage: enquiryMessage(t.name), price: t.price, image: t.heroImage, source: "card" });
             return (
               <Reveal key={t.slug} delay={(i % 3) * 0.12} style={{ height: "100%" }}>
-                <article className="card theme-card" id={`theme-${t.slug}`} style={{ height: "100%" }}>
+                <article ref={(el) => { cardRefs.current[i] = el; }} className="card theme-card" id={`theme-${t.slug}`} style={{ height: "100%" }}>
                   <div className="theme-card__media" style={{ background: `radial-gradient(120% 95% at 50% 18%, #ffffff 0%, #fffdfa 38%, ${t.accent} 100%)` }} onClick={demo} role="button" tabIndex={-1} aria-hidden>
                     <div className="theme-card__badges">
                       <span className="chip chip--neutral"><span className="live-dot" /> Live website</span>

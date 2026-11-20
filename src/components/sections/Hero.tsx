@@ -6,6 +6,7 @@ import { formatPrice, themes, videoInvites } from "@/data/catalog";
 import { extras, hero, saleBar, salePrice } from "@/data/content";
 import { enquiryMessage } from "@/data/site";
 import { track } from "@/lib/track";
+import { markJump } from "@/lib/view-tracking";
 import { Akshata } from "../Akshata";
 import { HeroKolams } from "../HeroDecor";
 import { CurvedCarousel, type CarouselItem } from "../CurvedCarousel";
@@ -134,7 +135,7 @@ export function Hero() {
         </h1>
         <motion.p className="sub" {...show(0.55)}>{hero.sub}</motion.p>
         <motion.div className="hero__cta" {...show(0.65)}>
-          <a href="#themes" className="btn btn--dark btn--lg" onClick={(e) => { e.preventDefault(); track("choose_theme_click", { cta_location: "hero_section", cta_name: "choose_theme" }); scrollTo("#themes"); }}>{hero.cta}</a>
+          <a href="#themes" className="btn btn--dark btn--lg" onClick={(e) => { e.preventDefault(); track("choose_theme_click", { cta_location: "hero_section", cta_name: "choose_theme" }); markJump("choose_theme_click"); scrollTo("#themes"); }}>{hero.cta}</a>
         </motion.div>
         <motion.p className="hero__from" {...show(0.75)}>
           <span className="hero__from-label">Wedding websites start from</span>
@@ -157,7 +158,7 @@ export function Hero() {
           <motion.a
             href="#themes"
             className="scroll-cue"
-            onClick={(e) => { e.preventDefault(); track("scroll_cue_click"); scrollTo("#themes"); }}
+            onClick={(e) => { e.preventDefault(); track("scroll_cue_click"); markJump("scroll_cue_click"); scrollTo("#themes"); }}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 16 }}
